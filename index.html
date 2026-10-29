@@ -637,7 +637,7 @@ ${sec("Objet en main",row("hw",HW,(a,i,o)=>`<button class="ac ${o}${pz("hw",i)}"
 </details></div>`}
 const $=id=>document.getElementById(id);
 const app=$("app");
-const NEWS_VER="2026-10-30";
+const NEWS_VER="2026-10-30b";
 const newP=n=>({nv:NEWS_VER,id:Date.now()+Math.random().toString(36).slice(2,5),pn:n,dex:[],hero:0,name:"",hc:0,ha:0,hw:0,bg:0,best:0,lv:2,subs:["Anglais","Maths","Français","Géométrie","Histoire"],caps:0,dmg:0,bad:{},miss:{},st:{},bossW:0,coins:0,own:{},inv:{},fr:0,ti:0,rc:{},zl:[0,0,0,0],surv:0,day:"",dn:0});
 let ST=null;try{ST=JSON.parse(localStorage.getItem("qm3")||"null")}catch(e){}
 let FIRST=false;if(!ST||!ST.ps||!ST.ps.length){FIRST=true;ST={cur:0,v:2,ps:[newP("Joueur 1")],mute:false,nov:false};try{const o=JSON.parse(localStorage.getItem("qm2")||"null");if(o){Object.assign(ST.ps[0],o);FIRST=false}}catch(e){}}
@@ -1083,7 +1083,9 @@ function abandon(){askD("Abandonner ce combat ? Les pièces déjà gagnées sont
 function askName(){if(!FIRST||$("fn"))return;const d=document.createElement("div");d.className="ov";d.id="fn";d.style.zIndex=130;
  d.innerHTML=`<div class="card c glow" onclick="event.stopPropagation()"><div class="pop" style="font-size:3.6rem;line-height:1.1">👋</div><h2 style="margin:6px 0">Comment t’appelles-tu ?</h2><p><small style="color:var(--mut)">Ce prénom sera celui de ton profil.</small></p><input id="fnn" class="nm" maxlength="12" placeholder="Ton prénom" autocomplete="off" style="margin:8px 0;text-align:center"><button class="btn big" id="fnb" onclick="saveName()">✅ C’est parti !</button></div>`;document.body.appendChild(d);const i=$("fnn");i.addEventListener("keydown",e=>{if(e.key=="Enter")saveName()});setTimeout(()=>{try{i.focus()}catch(e){}},200)}
 function saveName(){const i=$("fnn"),n=(i&&i.value||"").trim().slice(0,12);if(!n){if(i){i.style.outline="2px solid #ff6a6a";i.focus()}return}S.pn=n;FIRST=false;save();const d=$("fn");if(d)d.remove();home()}
-const NEWS=[{d:"30 octobre 2026",t:"Plus de musique en combat",l:[
+const NEWS=[{d:"30 octobre 2026",t:"Test de mise à jour",l:[
+ ["✅","<b>Si tu lis ce message, la mise à jour a bien fonctionné !</b> Le jeu se met à jour tout seul à chaque ouverture."],
+ ["🎵","Tu as aussi les <b>3 nouveaux styles de musique</b> (🗺️ Aventure, 👾 Arcade, 🔮 Mystère) et le bouton 🔇 pour couper la musique en combat."]]},{d:"30 octobre 2026",t:"Plus de musique en combat",l:[
  ["🎵","<b>3 nouveaux styles de musique</b> en combat : 🗺️ Aventure, 👾 Arcade et 🔮 Mystère."],
  ["🔇","<b>Bouton pour couper la musique</b> pendant un combat. Appuie dessus pour la remettre."]]},{d:"29 octobre 2026",t:"Coffres, cadeaux et ouvertures magiques",l:[
  ["✨","<b>Ouverture magique</b> : chaque coffre a 5 % de chances de s’ouvrir par magie. Tu choisis alors ton cadeau : 50 🪙, 2 Hyper Balls 🟡, un 50/50 🎯 ou un coffre rare 🔷 !"],
