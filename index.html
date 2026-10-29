@@ -637,7 +637,7 @@ ${sec("Objet en main",row("hw",HW,(a,i,o)=>`<button class="ac ${o}${pz("hw",i)}"
 </details></div>`}
 const $=id=>document.getElementById(id);
 const app=$("app");
-const NEWS_VER="2026-10-30b";
+const NEWS_VER="2026-10-30c";
 const newP=n=>({nv:NEWS_VER,id:Date.now()+Math.random().toString(36).slice(2,5),pn:n,dex:[],hero:0,name:"",hc:0,ha:0,hw:0,bg:0,best:0,lv:2,subs:["Anglais","Maths","Français","Géométrie","Histoire"],caps:0,dmg:0,bad:{},miss:{},st:{},bossW:0,coins:0,own:{},inv:{},fr:0,ti:0,rc:{},zl:[0,0,0,0],surv:0,day:"",dn:0});
 let ST=null;try{ST=JSON.parse(localStorage.getItem("qm3")||"null")}catch(e){}
 let FIRST=false;if(!ST||!ST.ps||!ST.ps.length){FIRST=true;ST={cur:0,v:2,ps:[newP("Joueur 1")],mute:false,nov:false};try{const o=JSON.parse(localStorage.getItem("qm2")||"null");if(o){Object.assign(ST.ps[0],o);FIRST=false}}catch(e){}}
@@ -795,7 +795,7 @@ function ask(){startMusic();
   <div id="m"><div class="fg">${G.m[0]}</div><div class="hp"><b>${G.m[1]}</b><div class="hpb mon"><i id="mbar" style="width:${G.mhp/G.mx*100}%"></i><span id="mnum">💀 ${G.mhp}</span></div></div></div>
  </div></div>
  <div class="card fq"><div class="fm"><small>${q[0]} · ${LV[G.ql==null?G.lv:G.ql]}${G.ql>G.lv?" ⬆️":G.ql<G.lv?" ⬇️":""}</small><span id="pot"></span></div><b class="fqt">${q[1]}</b><div class="fo">${opts.map((o,k)=>`<button class="btn opt" onclick="pick(${k})">${o[0]}</button>`).join("")}</div></div>
- <div class="fx">${S.inv.fh&&!G.ffu?`<button class="btn" id="ff" style="text-align:center;border-style:dashed" onclick="useFF()">🎯 50/50 (×${S.inv.fh})</button>`:""}${ST.mute?"":`<button class="btn" id="mb" style="text-align:center;opacity:.8${ST.nomu?";display:none":""}" onclick="musNext()">🎼 ${mTr().n}</button><button class="btn" id="mt" style="text-align:center;opacity:.8" onclick="musToggle()">${ST.nomu?"🎵 Remettre la musique":"🔇 Couper la musique"}</button>`}${ST.dev?`<button class="btn" id="kb" style="text-align:center;opacity:.9" onclick="devKill()">☠️ Tuer le monstre</button>`:""}<button class="btn" id="ab" style="text-align:center;opacity:.8" onclick="abandon()">🏳️ Abandonner</button></div></div>`;
+ <div class="fx">${S.inv.fh&&!G.ffu?`<button class="btn" id="ff" style="text-align:center;border-style:dashed" onclick="useFF()">🎯 50/50 (×${S.inv.fh})</button>`:""}${ST.mute?"":`<button class="btn" id="mb" style="text-align:center;opacity:.8${ST.nomu?";display:none":""}" onclick="musNext()">🎼 ${mTr().n}</button><button class="btn" id="mt" style="text-align:center;opacity:.8" onclick="musToggle()">${ST.nomu?"🎵 Remettre la musique":"🔇 Couper la musique"}</button>`}<button class="btn" id="vb" style="text-align:center;opacity:.8" onclick="vibToggle()">${ST.nov?"📳 Remettre les vibrations":"📴 Couper les vibrations"}</button>${ST.dev?`<button class="btn" id="kb" style="text-align:center;opacity:.9" onclick="devKill()">☠️ Tuer le monstre</button>`:""}<button class="btn" id="ab" style="text-align:center;opacity:.8" onclick="abandon()">🏳️ Abandonner</button></div></div>`;
 }
 function dmgFx(id,n,lv){try{const crit=lv>=1,ult=lv==2;
  const t=$(id),ar=t&&t.closest(".arena");if(!ar)return;const g=t.querySelector(".fg")||t,r=g.getBoundingClientRect(),a=ar.getBoundingClientRect(),X=r.left-a.left+r.width/2,Y=r.top-a.top+r.height/2,hero=id=="h";
@@ -950,6 +950,7 @@ function mBarMys(t,n){const k=n%4,c=MYC[k],r=MYR[k],B=BT;
 const TR={epic:{n:"⚔️ Épique",bpm:140,bar:mBarEpic},dyn:{n:"🔥 Dynamique",bpm:128,bar:mBarDyn},calm:{n:"🌙 Calme",bpm:84,bar:mBarCalm},adv:{n:"🗺️ Aventure",bpm:120,bar:mBarAdv},arc:{n:"👾 Arcade",bpm:150,bar:mBarArc},mys:{n:"🔮 Mystère",bpm:96,bar:mBarMys}},TRK=["epic","dyn","calm","adv","arc","mys"];
 const mTr=()=>TR[ST.mus]||TR.epic;
 function mBar(t,n){mTr().bar(t,n)}
+function vibToggle(){ST.nov=!ST.nov;save();const v=$("vb");if(v)v.textContent=ST.nov?"📳 Remettre les vibrations":"📴 Couper les vibrations";if(!ST.nov)vib(60)}
 function musToggle(){ST.nomu=!ST.nomu;save();const m=$("mt"),b=$("mb");if(ST.nomu){stopMusic()}else startMusic();if(m)m.textContent=ST.nomu?"🎵 Remettre la musique":"🔇 Couper la musique";if(b){b.style.display=ST.nomu?"none":"";b.textContent="🎼 "+mTr().n}}
 function musNext(){const i=TRK.indexOf(ST.mus||"epic");ST.mus=TRK[(i+1)%TRK.length];save();const b=$("mb");if(b)b.textContent="🎼 "+mTr().n;stopMusic();setTimeout(startMusic,60)}
 function mSched(){if(!MU.on||!AC)return;if(ST.mute||ST.nomu){stopMusic();return}while(MU.t<AC.currentTime+1.6){mBar(MU.t,MU.b++);MU.t+=BT*4}}
@@ -1083,7 +1084,8 @@ function abandon(){askD("Abandonner ce combat ? Les pièces déjà gagnées sont
 function askName(){if(!FIRST||$("fn"))return;const d=document.createElement("div");d.className="ov";d.id="fn";d.style.zIndex=130;
  d.innerHTML=`<div class="card c glow" onclick="event.stopPropagation()"><div class="pop" style="font-size:3.6rem;line-height:1.1">👋</div><h2 style="margin:6px 0">Comment t’appelles-tu ?</h2><p><small style="color:var(--mut)">Ce prénom sera celui de ton profil.</small></p><input id="fnn" class="nm" maxlength="12" placeholder="Ton prénom" autocomplete="off" style="margin:8px 0;text-align:center"><button class="btn big" id="fnb" onclick="saveName()">✅ C’est parti !</button></div>`;document.body.appendChild(d);const i=$("fnn");i.addEventListener("keydown",e=>{if(e.key=="Enter")saveName()});setTimeout(()=>{try{i.focus()}catch(e){}},200)}
 function saveName(){const i=$("fnn"),n=(i&&i.value||"").trim().slice(0,12);if(!n){if(i){i.style.outline="2px solid #ff6a6a";i.focus()}return}S.pn=n;FIRST=false;save();const d=$("fn");if(d)d.remove();home()}
-const NEWS=[{d:"30 octobre 2026",t:"Test de mise à jour",l:[
+const NEWS=[{d:"30 octobre 2026",t:"Vibrations en combat",l:[
+ ["📴","<b>Bouton pour couper les vibrations</b> pendant un combat. Appuie dessus pour les remettre (ton téléphone vibre un peu pour confirmer)."]]},{d:"30 octobre 2026",t:"Test de mise à jour",l:[
  ["✅","<b>Si tu lis ce message, la mise à jour a bien fonctionné !</b> Le jeu se met à jour tout seul à chaque ouverture."],
  ["🎵","Tu as aussi les <b>3 nouveaux styles de musique</b> (🗺️ Aventure, 👾 Arcade, 🔮 Mystère) et le bouton 🔇 pour couper la musique en combat."]]},{d:"30 octobre 2026",t:"Plus de musique en combat",l:[
  ["🎵","<b>3 nouveaux styles de musique</b> en combat : 🗺️ Aventure, 👾 Arcade et 🔮 Mystère."],
