@@ -1,9 +1,10 @@
 {
+ "id": "/quiz-master-quest/app",
  "name": "Quiz Master Quest",
  "short_name": "Quiz Quest",
  "description": "Jeu de quiz pour enfants",
- "start_url": "./",
- "scope": "./",
+ "start_url": "/quiz-master-quest/",
+ "scope": "/quiz-master-quest/",
  "display": "standalone",
  "orientation": "portrait",
  "background_color": "#1b1740",
