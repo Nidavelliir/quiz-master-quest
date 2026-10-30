@@ -1066,7 +1066,7 @@ const applyTheme=()=>{document.body.dataset.th=THN[S.th||0]||"nature"};
 function pRen(i){const n=prompt("Nouveau prénom du profil ?",ST.ps[i].pn);if(n&&n.trim()){ST.ps[i].pn=n.trim().slice(0,12);save();pRef()}}
 const PN={fr:FRL,ti:TI.map(t=>t||"∅"),bg:BGL,th:THL};
 function shopSec(t,k,pv){return `<div class="plabel">${t}</div><div class="shg">${PN[k].map((a,i)=>{const pr=(PRC[k]||[])[i]||0,ow=own(k,i),on=(S[k]||0)==i;return `<div class="it ${on?"on":""}"><button class="ac${ow?"":" lk"}" style="width:100%;height:auto;padding:6px 2px;font-size:${k=="ti"?".7rem":"1.3rem"}" onclick="setH('${k}',${i})">${k=="fr"&&FRN[i]?`<img src="s_fr_${FRN[i]}.webp" alt="" style="width:72px;height:72px;object-fit:contain;display:block;margin:0 auto">`:a}</button><small>${on?"✔️ choisi":ow?(pr?"✅ acheté":"gratuit"):pr+" 🪙"}</small>${pv?`<button class="eye" onclick="pvOpen('${k}',${i})">👁️ Aperçu</button>`:""}</div>`}).join("")}</div>`}
-const shopItems=()=>shopSec("🖼️ Cadres","fr",1)+shopSec("🏷️ Titres","ti",1)+shopSec("⚔️ Décors de combat","bg",1)+shopSec("🎨 Thèmes animés (fond du jeu)","th",1);
+const shopItems=()=>shopSec("🖼️ Cadres","fr",1)+shopSec("🏷️ Titres","ti",1)+shopSec("🎨 Thèmes animés (fond du jeu)","th",1);
 let PV=null;
 function pvOpen(k,i){PV={k,i};document.body.classList.add("pv");hpv();if(k=="th")document.body.dataset.th=THN[i];const pr=(PRC[k]||[])[i]||0,ow=own(k,i),HI=k=="fr"||k=="hw"||k=="hc"||k=="ti",sv=S[k];if(HI)S[k]=i;
  const mid=k=="bg"?`<div class="arena" style="background:${BG[i]};height:190px;margin:0"><div style="font-size:4rem;text-align:center">${hero()}<small style="display:block;font-size:.8rem">${esc(S.name||"Toi")}</small></div><div style="font-size:2.5rem">⚔️</div><div>${MD[0].svg}</div></div>`:`<div class="c" style="font-size:${HI?"8rem":"5rem"}">${hero()}<small style="display:block;font-size:.9rem;margin-top:6px">${esc(S.name||"Mon héros")}</small>${k=="ti"&&S.ti?`<small style="display:block;font-size:.95rem;color:var(--mut);font-weight:700">${TI[S.ti]}</small>`:""}</div>${HI?"<div></div>":`<div class="card c"><b>Exemple de menu</b><br><small>Les cartes laissent voir le décor.</small></div>`}`;if(HI)S[k]=sv;
@@ -3641,6 +3641,13 @@ html body main .btn.bossb .bic,html body main .btn.survb .bic{width:68px;height:
 .btx{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;min-width:0;text-align:left}
 .btx b{font-size:.92rem;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .btx small{font-size:.74rem;line-height:1.1;font-weight:800;color:#ffe9b0;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+
+/* accueil : cartes claires, titres noirs en gras */
+html body main #app>.card.parch.lvc,html body main #app>.card.parch.mtc{background:rgba(255,243,210,.55)!important;box-shadow:inset 0 0 0 2px rgba(255,243,207,.6),0 4px 10px rgba(0,0,0,.3)!important;border-color:rgba(227,184,74,.95)!important;backdrop-filter:none!important}
+html body main #app>.card.parch .ph,html body main #app>.card.parch .ph *{color:#000!important;font-weight:900!important;text-shadow:none!important}
+html body main .parch .ph img{filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
+html body main button.btn[style*="text-align:center;opacity:.7"]{background:rgba(255,243,210,.55)!important;border:2px solid rgba(227,184,74,.95)!important;color:#000!important;font-weight:900!important;opacity:1!important;text-shadow:none!important;box-shadow:none!important;backdrop-filter:none!important}
+html body main button.btn[style*="text-align:center;opacity:.7"] *{color:#000!important}
 </style>
 <script>
 (()=>{
