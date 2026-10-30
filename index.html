@@ -637,14 +637,15 @@ ${sec("Objet en main",row("hw",HW,(a,i,o)=>`<button class="ac ${o}${pz("hw",i)}"
 </details></div>`}
 const $=id=>document.getElementById(id);
 const app=$("app");
-const NEWS_VER="2026-10-30d";
+const NEWS_VER="2026-10-30e";
 const newP=n=>({nv:NEWS_VER,id:Date.now()+Math.random().toString(36).slice(2,5),pn:n,dex:[],hero:0,name:"",hc:0,ha:0,hw:0,bg:0,best:0,lv:2,subs:["Anglais","Maths","Français","Géométrie","Histoire"],caps:0,dmg:0,bad:{},miss:{},st:{},bossW:0,coins:0,own:{},inv:{},fr:0,ti:0,rc:{},zl:[0,0,0,0],surv:0,day:"",dn:0});
 let ST=null;try{ST=JSON.parse(localStorage.getItem("qm3")||"null")}catch(e){}
 let FIRST=false;if(!ST||!ST.ps||!ST.ps.length){FIRST=true;ST={cur:0,v:2,ps:[newP("Joueur 1")],mute:false,nov:false};try{const o=JSON.parse(localStorage.getItem("qm2")||"null");if(o){Object.assign(ST.ps[0],o);FIRST=false}}catch(e){}}
 mig(ST);
 ST.ps.forEach(p=>{p.dex=(p.dex||[]).map(n=>REN[n]||n);p.bad=p.bad||{};p.miss=p.miss||{};p.st=p.st||{};p.caps=p.caps||0;p.dmg=p.dmg||0;p.coins=p.coins||0;p.own=p.own||{};p.inv=p.inv||{};p.fr=p.fr||0;p.ti=p.ti||0;p.rc=p.rc||{};["hw","hc","bg"].forEach(k=>{if(p[k])p.own[k+p[k]]=1})});
 let S=ST.ps[ST.cur]||ST.ps[0];
-function save(){try{localStorage.setItem("qm3",JSON.stringify(ST))}catch(e){}try{fbSoon()}catch(e){}}
+var RM=null;
+function save(){let ps=null;if(RM){ps=ST.ps;ST.ps=ps.filter((p,i)=>i!==RM.idx)}try{localStorage.setItem("qm3",JSON.stringify(ST))}catch(e){}if(ps)ST.ps=ps;try{fbSoon();fbRemSave()}catch(e){}}
 let G;
 const sh=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 const L=[[
@@ -1026,7 +1027,7 @@ function send(){dailyB();const nr=G.n>(S.surv||0);if(nr){S.surv=G.n;snd("win");p
 const zcl=()=>{if(!S.zl){S.zl=[0,0,0,0,0,0];if(S.zone)S.zl[S.lv]=S.zone}return S.zl},zp=()=>zcl()[S.lv]||0;
 let PAU=false;
 function modal(x){let m=$("pm");if(!m){m=document.createElement("div");m.id="pm";m.className="pm";document.body.appendChild(m)}m.innerHTML=`<div class="pmc card">${x}</div>`;m.style.display="flex"}
-function pclose(){PAU=false;const m=$("pm");if(m)m.style.display="none";home()}
+function pclose(){fbRemClose();PAU=false;const m=$("pm");if(m)m.style.display="none";home()}
 function parentAsk(){PAU=false;modal(`<div class="c"><h3>🔒 Espace parent</h3><input id="pin" type="password" inputmode="numeric" maxlength="4" class="nm" placeholder="Code à 4 chiffres"><div id="pe" style="color:var(--ko);min-height:1.4em;margin-top:6px"></div></div><button class="btn big" onclick="parentCheck()">Valider</button><button class="btn" style="text-align:center" onclick="pclose()">Annuler</button>`);setTimeout(()=>{const p=$("pin");if(p){p.focus();p.onkeydown=e=>{if(e.key=="Enter")parentCheck()};p.oninput=()=>{if(p.value.length>=4)parentCheck()}}},50)}
 function parentCheck(){if($("pin").value==="0512"){PAU=true;PPV=null;parentOpen()}else{$("pe").textContent="Code incorrect";$("pin").value=""}}
 function parentBody(){return parentCard().replace(/^<details[^>]*>/,"<div>").replace(/<summary class="sm">.*?<\/summary>/,"").replace(/<\/details>$/,"</div>")}
@@ -1034,14 +1035,14 @@ function parentAdmin(){return `<h3 style="margin-top:18px">🛠️ Profils et r�
 let PPV=null;
 function pList(){return `<div class="plist">${ST.ps.map((p,i)=>`<button class="pli" onclick="pOpenP(${i})"><span class="av"><span class="hero" style="--hc:${HC[p.hc||0]}">${HERO[p.hero||0]}</span></span><span class="plt"><b>${esc(p.pn)}</b>${p===S?`<span class="pact-pill">● Profil actif</span>`:""}<small>${LV[p.lv||0]} · ${(p.dex||[]).length}/${MD.length} monstres · 🏅 ${sum(p.bad||{})}</small></span><span class="plc">🪙 ${p.coins||0}</span><span class="plg">›</span></button>`).join("")}</div>`}
 function pOpenP(i){PPV=i;parentOpen();const m=$("pm");if(m&&m.firstChild)m.firstChild.scrollTop=0}
-function pBack(){PPV=null;parentOpen();const m=$("pm");if(m&&m.firstChild)m.firstChild.scrollTop=0}
+function pBack(){fbRemClose();PPV=null;parentOpen();const m=$("pm");if(m&&m.firstChild)m.firstChild.scrollTop=0}
 function parentOpen(){const o=$("pm"),y=o&&o.firstChild?o.firstChild.scrollTop:0,multi=ST.ps.length>1;if(!multi||(PPV!=null&&!ST.ps[PPV]))PPV=null;
  const head=PPV!=null?`<div class="ph"><button class="btn" style="width:auto;margin:0;padding:6px 14px" onclick="pBack()">‹ Profils</button><button class="btn" style="width:auto;margin:0;padding:6px 16px" onclick="pclose()">✖️</button></div>`:`<div class="ph"><b style="font-size:1.15rem">👨‍👩‍👧 Espace parent</b><button class="btn" style="width:auto;margin:0;padding:6px 16px" onclick="pclose()">✖️</button></div>`;
  const body=PPV!=null?pProf(ST.ps[PPV],PPV):multi?`<div class="plabel" style="margin-top:12px">👤 Profils · touche un profil pour ouvrir sa page</div>`+pList()+pGen():ST.ps.map(pProf).join("")+pGen();
  modal(head+body);if(y)$("pm").firstChild.scrollTop=y}
 function pProf(p,i){const col=v=>v>=70?"var(--ok)":v>=40?"#e6a422":"var(--ko)",t=(a,b,ic,ac,fn)=>`<${fn?"button":"div"} class="pt${fn?" ptl":""}" style="--ac:${ac||"#7c63d6"}"${fn?` onclick="${fn}"`:""}><span class="pti">${ic||""}</span><b>${a}</b><small>${b}</small>${fn?`<span class="ptg">Voir ›</span>`:""}</${fn?"button":"div"}>`;
 const bars=SU.map(s=>{const v=p.st[s];if(!v)return"";const c=Math.round(v.o/v.t*100);return `<div class="row" style="margin-top:6px"><span>${s}</span><span>${c} % <small style="color:var(--mut)">(${v.o}/${v.t})</small></span></div><div class="bar"><i style="width:${c}%;background:${col(c)}"></i></div>`}).join("")||`<small style="color:var(--mut)">Pas encore de statistiques.</small>`;
-return `<div class="pcard"><div class="tb1 phd"><span class="av"><span class="hero" style="--hc:${HC[p.hc||0]}">${HERO[p.hero||0]}</span></span><div><b style="font-size:1.2rem">${esc(p.pn)}</b>${p===S?`<span class="pact-pill">● Profil actif</span>`:`<small>Profil</small>`}</div><span class="chip">🪙 ${p.coins||0}</span></div>
+return `<div class="pcard"><div class="tb1 phd"><span class="av"><span class="hero" style="--hc:${HC[p.hc||0]}">${HERO[p.hero||0]}</span></span><div><b style="font-size:1.2rem">${esc(p.pn)}</b>${p===S?`<span class="pact-pill">● Profil actif</span>`:`<small>${p.__rm?"📡 Profil à distance · "+esc((FBRem.find(r=>r.id===p.id)||{}).dn||""):"Profil"}</small>`}</div><span class="chip">🪙 ${p.coins||0}</span></div>
 <div class="pgrid" style="margin-top:12px">${t(p.dex.length+"/"+MD.length,"Monstres","🐾","#4dd0e1","pDex("+i+")")}${t(p.caps,"Captures","🎯","#ff9f43")}${t(p.dmg,"Dégâts","💥","#ff6b6b")}${t(sum(p.bad),"Badges","🏅","#ffd23f")}${t(p.bossW||0,"Boss","👹","#e8454b")}${t(p.surv||0,"Survie","🏃","#7bd88f")}${t(Object.keys(p.miss||{}).length,"À revoir","🔁","#b388ff")}${t(LV[p.lv],"Niveau","🎓","#74b9ff")}</div>
 ${po("z","🗺️ Zones conquises")}<div class="pgrid g3">${LV.map((l,k)=>{const z=(p.zl||[])[k]||0;return `<div class="pt" style="--ac:#7bd88f"><b>${z}/${ZN.length}</b><small>${l}</small><i class="pzb"><i style="width:${z/ZN.length*100}%"></i></i></div>`}).join("")}</div>
 </details>${po("m","📊 Réussite par matière")}${bars}</details>
@@ -1058,7 +1059,7 @@ function pUlt(i,v){ST.ps[i].ult=+v;save()}
 function pCcr(i,v){ST.ps[i].ccr=+v;save()} function pBcr(i,v){ST.ps[i].bcr=+v;save()} function pLgr(i,v){ST.ps[i].lgr=+v;save()}
 function pChh(i,v){ST.ps[i].chh=+v;save()}function pChb(i,v){ST.ps[i].chb=+v;save()}function pChf(i,v){ST.ps[i].chf=+v;save()}function pCr2(i,v){ST.ps[i].cr2=+v;save()}function pCr3(i,v){ST.ps[i].cr3=+v;save()}
 function pNew(){const n=prompt("Prénom du nouveau profil ?");if(n&&n.trim()){ST.ps.push(newP(n.trim().slice(0,12)));save();pRef()}}
-function pDel(i){if(ST.ps.length<2){tell("Il faut garder au moins un profil.");return}const p=ST.ps[i];askD("Supprimer définitivement le profil "+p.pn+" avec sa collection, ses pièces et ses badges ?",()=>{const c=ST.ps[ST.cur];ST.ps.splice(i,1);const k=ST.ps.indexOf(c);ST.cur=k<0?0:k;S=ST.ps[ST.cur];PPV=null;save();pRef()},"Supprimer",{danger:1})}
+function pDel(i){if(ST.ps[i]&&ST.ps[i].__rm){tell("La suppression d’un profil se fait sur son propre téléphone.");return}if(ST.ps.length<2){tell("Il faut garder au moins un profil.");return}const p=ST.ps[i];askD("Supprimer définitivement le profil "+p.pn+" avec sa collection, ses pièces et ses badges ?",()=>{const c=ST.ps[ST.cur];ST.ps.splice(i,1);const k=ST.ps.indexOf(c);ST.cur=k<0?0:k;S=ST.ps[ST.cur];PPV=null;save();pRef()},"Supprimer",{danger:1})}
 const THN=["nature","foudre","glace","eau","feu","vent","nocturne","gemmes"],THL=["🌿 Nature","⚡ Foudre","❄️ Glace","🌊 Eau","🔥 Feu","🌬️ Vent","🌙 Nocturne","💎 Gemmes"];
 const applyTheme=()=>{document.body.dataset.th=THN[S.th||0]||"nature"};
 {const _h=home;home=function(){applyTheme();_h()}}
@@ -1084,7 +1085,11 @@ function abandon(){askD("Abandonner ce combat ? Les pièces déjà gagnées sont
 function askName(){if(!FIRST||$("fn"))return;const d=document.createElement("div");d.className="ov";d.id="fn";d.style.zIndex=130;
  d.innerHTML=`<div class="card c glow" onclick="event.stopPropagation()"><div class="pop" style="font-size:3.6rem;line-height:1.1">👋</div><h2 style="margin:6px 0">Comment t’appelles-tu ?</h2><p><small style="color:var(--mut)">Ce prénom sera celui de ton profil.</small></p><input id="fnn" class="nm" maxlength="12" placeholder="Ton prénom" autocomplete="off" style="margin:8px 0;text-align:center"><button class="btn big" id="fnb" onclick="saveName()">✅ C’est parti !</button></div>`;document.body.appendChild(d);const i=$("fnn");i.addEventListener("keydown",e=>{if(e.key=="Enter")saveName()});setTimeout(()=>{try{i.focus()}catch(e){}},200)}
 function saveName(){const i=$("fnn"),n=(i&&i.value||"").trim().slice(0,12);if(!n){if(i){i.style.outline="2px solid #ff6a6a";i.focus()}return}S.pn=n;FIRST=false;save();const d=$("fn");if(d)d.remove();home()}
-const NEWS=[{d:"30 octobre 2026",t:"Partage du jeu",l:[
+const NEWS=[{d:"30 octobre 2026",t:"Famille en ligne",l:[
+ ["☁️","<b>Famille en ligne</b> : tes parents peuvent relier ton téléphone au leur (avec un code ou un QR code)."],
+ ["🎁","<b>Cadeaux à distance</b> : ils peuvent t’envoyer pièces, objets et coffres même s’ils ne sont pas à côté de toi, et te voir ouvrir la fenêtre cadeau !"],
+ ["⚙️","<b>Réglages à distance</b> : niveau, taux de capture et coffres peuvent être réglés depuis le téléphone d’un parent."],
+ ["🔄","Rien ne change si ton téléphone n’est pas relié : le jeu marche comme avant, même sans réseau."]]},{d:"30 octobre 2026",t:"Partage du jeu",l:[
  ["📤","<b>Bouton « Partager l’application »</b> en bas de l’accueil : envoie le lien du jeu à un ami ou à un membre de la famille, pour qu’il l’ouvre dans Google Chrome."]]},{d:"30 octobre 2026",t:"Vibrations en combat",l:[
  ["📴","<b>Bouton pour couper les vibrations</b> pendant un combat. Appuie dessus pour les remettre (ton téléphone vibre un peu pour confirmer)."]]},{d:"30 octobre 2026",t:"Test de mise à jour",l:[
  ["✅","<b>Si tu lis ce message, la mise à jour a bien fonctionné !</b> Le jeu se met à jour tout seul à chaque ouverture."],
@@ -3139,12 +3144,44 @@ function fbLoad(){if(FBP)return FBP;FBP=(async()=>{if(window.__FBFAKE){FBX=windo
 const fbErr=e=>{const c=String(e&&(e.code||e.message)||e);return /permission/i.test(c)?"Accès refusé : les règles Firestore ne sont pas encore publiées.":/unavailable|network|offline|fetch|import/i.test(c)?"Pas de réseau pour l’instant : l’envoi se fera plus tard.":c}
 function fbSoon(){if(!ST.fb||!ST.fb.fam)return;clearTimeout(FBT);FBT=setTimeout(fbPush,5000)}
 async function fbPush(){const f=ST.fb;if(!f||!f.fam)return;try{const X=await fbLoad(),now=Date.now();
- for(const p of ST.ps){if(!p.id)continue;const data=JSON.stringify(p);if(data.length>900000)continue;
+ for(const p of ST.ps){if(!p.id||p.__rm)continue;const data=JSON.stringify(p);if(data.length>900000)continue;
   const sm={lv:p.lv||0,coins:p.coins||0,caps:p.caps||0,dex:(p.dex||[]).length,ch:(p.ch||[]).length,bad:sum(p.bad||{}),bossW:p.bossW||0,dmg:p.dmg||0};
   await X.fs.setDoc(X.fs.doc(X.db,"fam",f.fam,"profiles",p.id),{pn:p.pn,dev:f.dev,dn:f.dn||"",upd:now,sum:sm,data})}
  fbSet("ok","")}catch(e){fbSet("err",fbErr(e))}}
-async function fbWatch(){const f=ST.fb;if(!f||!f.fam||f.role!="parent"||FBUn)return;try{const X=await fbLoad();
- FBUn=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"profiles"),sn=>{FBRem=sn.docs.map(d=>({id:d.id,...d.data()}));fbSet("ok","")},e=>{FBUn=null;fbSet("err",fbErr(e))})}catch(e){fbSet("err",fbErr(e))}}
+let FBOps=[],FBUn2=null;
+async function fbWatch(){const f=ST.fb;if(!f||!f.fam)return;try{const X=await fbLoad();
+ if(f.role=="parent"&&!FBUn)FBUn=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"profiles"),sn=>{FBRem=sn.docs.map(d=>({id:d.id,...d.data()}));fbSet("ok","")},e=>{FBUn=null;fbSet("err",fbErr(e))});
+ if(!FBUn2)FBUn2=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"ops"),sn=>{FBOps=sn.docs.map(d=>({id:d.id,...d.data()}));fbRecv();if(PAU&&!RM)pRef()},e=>{FBUn2=null;fbSet("err",fbErr(e))})}catch(e){fbSet("err",fbErr(e))}}
+/* --- modifications à distance : journal d'opérations (rien n'est écrasé : les nombres sont additionnés) --- */
+const fbIsO=x=>x&&typeof x=="object"&&!Array.isArray(x),fbInc=p=>p=="coins"||/^inv\./.test(p),fbJ=x=>JSON.stringify(x===undefined?null:x);
+function fbDiff(o,n){const ops=[];
+ if(fbJ(o.ch||[])+fbJ(o.cw||[])!==fbJ(n.ch||[])+fbJ(n.cw||[]))ops.push({t:"ch",from:o.ch||[],fw:o.cw||[],to:n.ch||[],tw:n.cw||[]});
+ const og=o.gift||{},ng=n.gift||{},gd={coins:(ng.coins||0)-(og.coins||0),n:(ng.n||0)-(og.n||0),ch:(ng.ch||[]).slice((og.ch||[]).length)},it={};let hi=0;
+ for(const k of new Set([...Object.keys(og.it||{}),...Object.keys(ng.it||{})])){const d=((ng.it||{})[k]||0)-((og.it||{})[k]||0);if(d){it[k]=d;hi=1}}
+ if(hi)gd.it=it;if(gd.coins>0||gd.n>0||gd.ch.length||hi)ops.push({t:"gift",v:gd});
+ const walk=(a,b,path)=>{if(path.length===1&&/^(ch|cw|gift|id|__rm)$/.test(path[0]))return;
+  if(fbIsO(a)&&fbIsO(b)){for(const k of new Set([...Object.keys(a),...Object.keys(b)]))walk(a[k],b[k],path.concat(k));return}
+  if(fbJ(a)===fbJ(b))return;const ps=path.join(".");
+  if(b===undefined){ops.push({t:"del",p:path});return}
+  if(fbInc(ps)&&typeof b=="number"&&(typeof a=="number"||a===undefined)){ops.push({t:"inc",p:path,d:b-(a||0)});return}
+  ops.push({t:"set",p:path,v:b})};
+ for(const k of new Set([...Object.keys(o),...Object.keys(n)]))walk(o[k],n[k],[k]);return ops}
+function fbApply(P,ops){for(const op of ops){
+ if(op.t=="ch"){if(fbJ(P.ch||[])+fbJ(P.cw||[])===fbJ(op.from)+fbJ(op.fw)){P.ch=op.to.slice();P.cw=op.tw.slice()}else op.to.slice(op.from.length).forEach(r=>{if((P.ch||[]).length<CHMAX)addCh(P,r)})}
+ else if(op.t=="gift"){const g=P.gift=P.gift||{coins:0,n:0},d=op.v;g.coins=(g.coins||0)+(d.coins||0);g.n=(g.n||0)+(d.n||0);if(d.ch&&d.ch.length){g.ch=g.ch||[];d.ch.forEach(r=>g.ch.push(r))}if(d.it){g.it=g.it||{};for(const k in d.it)g.it[k]=(g.it[k]||0)+d.it[k]}}
+ else{let o=P;for(let i=0;i<op.p.length-1;i++){const k=op.p[i];if(!fbIsO(o[k]))o[k]={};o=o[k]}const k=op.p[op.p.length-1];
+  if(op.t=="inc")o[k]=Math.max(0,(o[k]||0)+op.d);else if(op.t=="del")delete o[k];else o[k]=op.v}}}
+async function fbSend(pid,ops){const f=ST.fb;if(!f||!f.fam)return;try{const X=await fbLoad();await X.fs.setDoc(X.fs.doc(X.db,"fam",f.fam,"ops",fbRnd(12)),{pid,ops:JSON.stringify(ops),ts:Date.now(),from:f.dev});fbSet("ok","")}catch(e){fbSet("err",fbErr(e))}}
+function fbRemSave(){if(!RM)return;const cur=ST.ps[RM.idx];if(!cur)return;const ops=fbDiff(RM.base,cur);if(!ops.length)return;RM.base=JSON.parse(JSON.stringify(cur));fbSend(RM.pid,ops)}
+function fbOpen(pid){const r=FBRem.find(x=>x.id===pid);if(!r||!r.data){tell("Ce profil n’est pas encore disponible.");return}let d;try{d=JSON.parse(r.data)}catch(e){tell("Profil illisible.");return}
+ FBOps.filter(o=>o.pid===pid).sort((a,b)=>a.ts-b.ts).forEach(o=>{try{fbApply(d,JSON.parse(o.ops))}catch(e){}});
+ fbRemClose();d.__rm=1;RM={pid,idx:ST.ps.length,base:JSON.parse(JSON.stringify(d))};ST.ps.push(d);PPV=RM.idx;parentOpen()}
+function fbRemClose(){if(!RM)return;if(ST.ps[RM.idx])ST.ps.splice(RM.idx,1);RM=null;PPV=null}
+async function fbRecv(){const f=ST.fb;if(!f||!FBOps.length)return;f.done=f.done||[];let ch=0;
+ for(const o of FBOps.slice().sort((a,b)=>a.ts-b.ts)){const P=ST.ps.find((p,i)=>p.id===o.pid&&!(RM&&i===RM.idx));if(!P)continue;
+  if(!f.done.includes(o.id)){try{fbApply(P,JSON.parse(o.ops));f.done.push(o.id);if(f.done.length>200)f.done.shift();ch=1}catch(e){continue}}
+  try{const X=await fbLoad();await X.fs.deleteDoc(X.fs.doc(X.db,"fam",f.fam,"ops",o.id))}catch(e){}}
+ if(ch){save();if(!document.querySelector(".fgt")&&!document.querySelector(".ov")&&!PAU)home()}}
 function fbCreate(){askD("Créer votre famille en ligne ? Un code de liaison sera généré pour relier les téléphones des enfants.",()=>{ST.fb={fam:fbRnd(24),role:"parent",dev:fbRnd(10),dn:"Téléphone parent"};save();fbSet("wait","Envoi…");fbPush();fbWatch();pRef()},"Créer",{i:"☁️"})}
 function fbGot(t){const m=(t||"").trim().match(/^QDSF-([A-Za-z0-9]{24})$/);if(!m)return false;trScanStop();const e=$("fjc");if(e)e.value=fbFmt(m[1].toUpperCase());const n=$("fjn");if(n)n.focus();return true}
 function fbJoinWin(){const d=document.createElement("div");d.className="ov";d.id="fjw";d.style.zIndex=140;d.onclick=()=>d.remove();
@@ -3153,15 +3190,15 @@ async function fbJoin(){const c=fbNorm($("fjc").value),n=($("fjn").value||"").tr
  e.style.color="var(--mut)";e.textContent="Vérification du code…";
  try{const X=await fbLoad(),sn=await X.fs.getDocs(X.fs.collection(X.db,"fam",c,"profiles"));if(!sn.docs||!sn.docs.length){e.style.color="#ff8a80";e.textContent="Aucune famille trouvée avec ce code. Vérifie-le : le plus sûr est de le copier-coller.";return}}
  catch(x){e.style.color="#ff8a80";e.textContent=fbErr(x);return}
- ST.fb={fam:c,role:"kid",dev:fbRnd(10),dn:n};save();const w=$("fjw");if(w)w.remove();fbSet("wait","Envoi…");fbPush();pRef()}
-function fbUnlink(){askD("Délier ce téléphone de la famille en ligne ? Les profils restent sur ce téléphone et gardent leur progression.",()=>{if(FBUn){try{FBUn()}catch(e){}FBUn=null}clearTimeout(FBT);ST.fb=null;FBRem=[];save();fbSet("off","");pRef()},"Délier",{danger:1})}
+ ST.fb={fam:c,role:"kid",dev:fbRnd(10),dn:n};save();const w=$("fjw");if(w)w.remove();fbSet("wait","Envoi…");fbPush();fbWatch();pRef()}
+function fbUnlink(){askD("Délier ce téléphone de la famille en ligne ? Les profils restent sur ce téléphone et gardent leur progression.",()=>{fbRemClose();if(FBUn){try{FBUn()}catch(e){}FBUn=null}if(FBUn2){try{FBUn2()}catch(e){}FBUn2=null}clearTimeout(FBT);ST.fb=null;FBRem=[];FBOps=[];save();fbSet("off","");pRef()},"Délier",{danger:1})}
 function fbCopy(){const c=ST.fb&&ST.fb.fam;if(!c)return;const t=fbFmt(c);try{navigator.clipboard.writeText(t).then(()=>tell("Code copié : "+t),()=>tell(t))}catch(e){tell(t)}}
 const fbAgo=ms=>{const m=Math.round((Date.now()-ms)/60000);return m<1?"à l’instant":m<60?"il y a "+m+" min":m<1440?"il y a "+Math.round(m/60)+" h":"il y a "+Math.round(m/1440)+" j"};
 function pFam(){const f=ST.fb;
  if(!f||!f.fam)return `<div class="pcard">${po("w","☁️ Famille en ligne")}<small style="color:var(--mut)">Relie les téléphones de la famille pour voir les profils des enfants depuis ton téléphone.</small><div class="pact" style="margin-top:8px"><button class="btn" onclick="fbCreate()">➕ Créer ma famille</button><button class="btn" onclick="fbJoinWin()">🔗 Rejoindre avec un code</button></div></details></div>`;
  const st=FBSt.s=="err"?`<div class="pgm" style="color:#ff8a80">⚠️ ${esc(FBSt.m)}</div>`:FBSt.s=="ok"?`<div class="pgm" style="color:var(--ok)">✅ Connecté${f.last?"":""}</div>`:`<div class="pgm">⏳ ${esc(FBSt.m||"Connexion…")}</div>`;
  const rem=FBRem.filter(r=>r.dev!==f.dev);
- return `<div class="pcard">${po("w","☁️ Famille en ligne")}${st}<div class="row"><span>📱 Ce téléphone<br><small style="color:var(--mut)">${esc(f.dn||"")} · ${f.role=="parent"?"parent":"enfant"} · famille …${f.fam.slice(-4)}</small></span></div>${f.role=="parent"?`<div class="plabel" style="margin:8px 0 4px">🔑 Code de liaison</div><div style="font-family:monospace;font-size:1rem;text-align:center;padding:8px;border:1px dashed #7c63d6;border-radius:12px;word-break:break-all">${fbFmt(f.fam)}</div><div style="text-align:center;margin:10px 0">${qrSvg("QDSF-"+f.fam,220)}</div><div class="pact" style="margin:6px 0"><button class="btn" onclick="fbCopy()">📋 Copier le code</button></div><small style="color:var(--mut)">Sur le téléphone d’un enfant : Espace parent, « Rejoindre avec un code », puis « Scanner le QR du parent ». Garde ce code pour toi.</small><div class="plabel" style="margin:12px 0 4px">👦 Profils des autres téléphones (${rem.length})</div>${rem.length?rem.map(r=>{const m=r.sum||{};return `<div class="ivr" style="padding:8px;margin:5px 0"><span class="ivt"><b>${esc(r.pn||"?")}</b><small>📱 ${esc(r.dn||"")} · ${fbAgo(r.upd||0)}</small><small>🎓 ${LV[m.lv||0]||""} · 🪙 ${m.coins||0} · 🎯 ${m.caps||0} captures · 🐾 ${m.dex||0} monstres · 🎁 ${m.ch||0} coffre(s)</small></span></div>`}).join(""):`<small style="color:var(--mut)">Aucun profil reçu pour l’instant. Relie un téléphone d’enfant avec le code ci-dessus.</small>`}`:`<small style="color:var(--mut)">Les profils de ce téléphone sont envoyés au parent.</small>`}<button class="btn dg" style="text-align:center;margin-top:10px" onclick="fbUnlink()">⛔ Délier ce téléphone</button></details></div>`}
+ return `<div class="pcard">${po("w","☁️ Famille en ligne")}${st}<div class="row"><span>📱 Ce téléphone<br><small style="color:var(--mut)">${esc(f.dn||"")} · ${f.role=="parent"?"parent":"enfant"} · famille …${f.fam.slice(-4)}</small></span></div>${f.role=="parent"?`<div class="plabel" style="margin:8px 0 4px">🔑 Code de liaison</div><div style="font-family:monospace;font-size:1rem;text-align:center;padding:8px;border:1px dashed #7c63d6;border-radius:12px;word-break:break-all">${fbFmt(f.fam)}</div><div style="text-align:center;margin:10px 0">${qrSvg("QDSF-"+f.fam,220)}</div><div class="pact" style="margin:6px 0"><button class="btn" onclick="fbCopy()">📋 Copier le code</button></div><small style="color:var(--mut)">Sur le téléphone d’un enfant : Espace parent, « Rejoindre avec un code », puis « Scanner le QR du parent ». Garde ce code pour toi.</small><div class="plabel" style="margin:12px 0 4px">👦 Profils des autres téléphones (${rem.length})</div>${rem.length?rem.map(r=>{const m=r.sum||{},pn=FBOps.filter(o=>o.pid===r.id).length;return `<button class="pli" style="width:100%;text-align:left;margin:5px 0" onclick="fbOpen('${r.id}')"><span class="plt"><b>${esc(r.pn||"?")} ›</b><small>📱 ${esc(r.dn||"")} · ${fbAgo(r.upd||0)}</small><small>🎓 ${LV[m.lv||0]||""} · 🪙 ${m.coins||0} · 🎯 ${m.caps||0} captures · 🐾 ${m.dex||0} monstres · 🎁 ${m.ch||0} coffre(s)</small>${pn?`<small style="color:#ffcf40">⏳ ${pn} modification(s) en route vers son téléphone</small>`:""}</span></button>`}).join(""):`<small style="color:var(--mut)">Aucun profil reçu pour l’instant. Relie un téléphone d’enfant avec le code ci-dessus.</small>`}`:`<small style="color:var(--mut)">Les profils de ce téléphone sont envoyés au parent.</small>`}<button class="btn dg" style="text-align:center;margin-top:10px" onclick="fbUnlink()">⛔ Délier ce téléphone</button></details></div>`}
 
 home();
 if(ST.fb&&ST.fb.fam){fbSoon();fbWatch()}
