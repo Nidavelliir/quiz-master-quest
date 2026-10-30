@@ -3442,6 +3442,25 @@ html body .ov[style*="z-index"]{z-index:300!important}
 html body .win{z-index:150}
 html body #tabbar{z-index:140}
 html body .win~#tabbar{z-index:140}
+
+/* défaite */
+html body main #app>.card.lz{background:linear-gradient(180deg,#2a1a5c,#140e36)!important;border:3px solid #e3b84a!important;margin-top:120px;padding:34px 14px 16px;position:relative;overflow:visible!important}
+.lz .lzh{position:absolute;left:-8px;right:-8px;bottom:100%;height:170px;margin-bottom:-24px;background:url(s_lose_top.webp) bottom center/cover no-repeat;border-radius:20px 20px 0 0;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%);mask-image:linear-gradient(180deg,transparent 0,#000 18%)}
+.lz>div:first-of-type{font-size:3rem!important}.lz>div.lzh{font-size:0!important}
+.lz h2{font-size:2rem;margin:4px 0;color:#ffd24a;text-shadow:0 3px 0 #5a2a00}
+body.lzb{background:#0e0a28 url(s_lose_bg.webp) center top/100% auto no-repeat!important}
+body.lzb canvas#thc{display:none}
+/* niveau / matières parchemin */
+.parch.lvc,.parch.mtc{position:relative}
+.parch .ph{display:flex;align-items:center;justify-content:center;gap:8px;margin:-4px -6px 10px;padding:6px 10px;background:linear-gradient(180deg,#1c3a78,#10265a);border:2px solid #e3b84a;border-radius:14px;color:#ffd24a;font-size:1.25rem;font-weight:900;text-shadow:0 2px 0 #3e200b}
+.parch .ph img{height:34px}
+.parch .ph small{color:#e9f0ff!important;font-size:.72rem;font-weight:700;text-shadow:none}
+.parch .cats:not(.subs) button{border-radius:99px;font-weight:900;font-size:1.05rem;padding:8px 16px;background:linear-gradient(180deg,#f9ecc8,#ecd199)!important}
+.parch .cats:not(.subs) button.on{background:linear-gradient(180deg,#ffe27a,#f0a21a)!important;box-shadow:0 0 14px rgba(255,200,70,.8)!important;color:#3b2a00}
+.parch .cats.subs button{background:none!important;border:0!important;box-shadow:none!important;padding:0;width:calc(25% - 8px)}
+.parch .cats.subs button img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:12px;border:2px solid #e3b84a}
+.parch .cats.subs button span{display:block;background:#fff6dc;border:2px solid #e3b84a;border-radius:99px;padding:1px 4px;margin-top:-12px;position:relative;font-weight:900;font-size:.72rem;color:#3b2a14}
+.parch .cats.subs button.on{box-shadow:none!important;opacity:1}.parch .cats.subs button:not(.on){opacity:.5;filter:grayscale(.6)}
 </style>
 <script>
 (()=>{
@@ -3454,7 +3473,13 @@ function tabbar(){let t=document.getElementById("tabbar");
  const cur=WIN=="zone"?1:WIN=="dex"?2:WIN=="shop"?3:WIN=="menu"?4:(WIN?-1:0);
  const it=[["Accueil","closeWin()"],["Carte","openWin('zone')"],["Dex","openWin('dex')"],["Boutique","openWin('shop')"],["Sac","openWin('menu')"]];
  t.innerHTML=it.map((x,i)=>`<button class="${i==cur?"on":""}" onclick="${x[1]}"><img src="s_t${i+1}.webp" alt=""><span>${x[0]}</span></button>`).join("")}
-function skinHome(){const hc=document.getElementById("hcard");if(!hc||!app.contains(hc)||hc.classList.contains("hs2")){tabbar();return}
+
+function skinMore(){const c=app.querySelector(":scope>.card.c");if(c&&!c.classList.contains("lz")&&c.textContent.includes("Tu as perdu")){c.classList.add("lz");c.insertAdjacentHTML("afterbegin",'<div class="lzh"></div>');document.body.classList.add("lzb")}
+ if(!app.querySelector(".lz"))document.body.classList.remove("lzb");
+ app.querySelectorAll(".parch").forEach(p=>{if(p.querySelector(".ph"))return;const t=p.textContent;
+  if(t.includes("Niveau")&&p.querySelector(".cats")){p.classList.add("lvc");const b=p.querySelector("b"),sm=p.querySelector("small");const h=document.createElement("div");h.className="ph";h.innerHTML='<img src="s_cap.webp" alt="">Niveau'+(sm?'<small>🔒 code parent pour changer</small>':"");if(b)b.replaceWith(h);if(sm)sm.remove()}
+  else if(t.includes("Matières")&&p.querySelector(".cats.subs")){p.classList.add("mtc");const b=p.querySelector("b");const h=document.createElement("div");h.className="ph";h.innerHTML='<img src="s_books.webp" alt="">Matières';if(b)b.replaceWith(h)}})}
+function skinHome(){skinMore();const hc=document.getElementById("hcard");if(!hc||!app.contains(hc)||hc.classList.contains("hs2")){tabbar();return}
  hc.classList.add("hs2");const nm=S.pn||"Joueur",lvl=LV[S.lv],n=S.dex.length;
  const sc=document.createElement("div");sc.className="scn";
  sc.innerHTML=`<div class="ttl">Quiz<br>Master Quest</div><div class="coin">🪙 ${S.coins||0}</div><button class="gear" aria-label="Menu" onclick="openWin('menu')">⚙️</button><div class="pf"><i>${esc(nm.charAt(0).toUpperCase())}</i><div><b>${esc(nm)} <span role="button" aria-label="Modifier le nom" onclick="rn()" style="font-size:.7em">✏️</span><em>${lvl}</em></b><u><s style="width:${Math.max(3,Math.round(n/MD.length*100))}%"></s></u><small>${n} / ${MD.length} monstres capturés</small></div></div><div class="hh" onclick="openWin('hero')">${hero()}</div><button class="sb" style="top:49%" onclick="const d=document.querySelector('.chtab');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'})}"><span>🎁</span>Coffres<em>${chs().length}/${CHMAX}</em></button><button class="sb" style="top:75%" onclick="openWin('news')"><span>📜</span>Nouveautés</button>`;
@@ -3462,11 +3487,11 @@ function skinHome(){const hc=document.getElementById("hcard");if(!hc||!app.conta
  const mg=app.querySelector(".mgrid");if(mg){let x=mg;const rm=[];while(x){rm.push(x);x=x.nextElementSibling}rm.forEach(e=>e.remove())}
  app.querySelectorAll(".btn.big").forEach(b=>{const o=b.getAttribute("onclick")||"";const c=o.startsWith("start(")?"go":o.includes("'boss'")?"bossb":o.includes("'surv'")?"survb":o.includes("'rev'")?"revb":"";if(c){b.classList.add(c);b.removeAttribute("style")}});
  const bb=app.querySelector(".bossb"),sv=app.querySelector(".survb");if(bb&&sv&&bb.nextElementSibling){const w=document.createElement("div");w.className="btr2";const rv=bb.nextElementSibling;bb.before(w);w.append(bb,sv)}
- app.querySelectorAll(":scope>.card").forEach(c=>{if(c.id!="hcard"){c.classList.add("parch");const k=c.querySelector(".cats");if(c.textContent.includes("Matières")&&k){k.classList.add("subs");k.querySelectorAll("button").forEach(b=>{const t=b.textContent.trim(),i=IC[t];if(i)b.innerHTML=`<img src="s_ic_${i}.webp" alt=""><span>${t}</span>`})}}});
+ app.querySelectorAll(":scope>.card").forEach(c=>{if(c.id!="hcard"){c.classList.add("parch");const k=c.querySelector(".cats");if(c.textContent.includes("Matières")&&k){k.classList.add("subs");k.querySelectorAll("button").forEach(b=>{const t=b.textContent.trim(),i=IC[t];if(i)b.innerHTML=`<img src="s_mi_${i}.webp" alt=""><span>${t}</span>`})}}});
  tabbar()}
 {const h0=home;home=function(){h0();skinHome()}}
 {const o=openWin,c=closeWin;openWin=function(k){o(k);tabbar()};closeWin=function(){c();tabbar()}}
-new MutationObserver(()=>skinHome()).observe(app,{childList:true});
+new MutationObserver(()=>{skinMore();skinHome()}).observe(app,{childList:true});
 skinHome();
 })();
 </script>
