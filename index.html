@@ -637,7 +637,7 @@ ${sec("Objet en main",row("hw",HW,(a,i,o)=>`<button class="ac ${o}${pz("hw",i)}"
 </details></div>`}
 const $=id=>document.getElementById(id);
 const app=$("app");
-const NEWS_VER="2026-10-30f";
+const NEWS_VER="2026-10-30g";
 const newP=n=>({nv:NEWS_VER,id:Date.now()+Math.random().toString(36).slice(2,5),pn:n,dex:[],hero:0,name:"",hc:0,ha:0,hw:0,bg:0,best:0,lv:2,subs:["Anglais","Maths","Français","Géométrie","Histoire"],caps:0,dmg:0,bad:{},miss:{},st:{},bossW:0,coins:0,own:{},inv:{},fr:0,ti:0,rc:{},zl:[0,0,0,0],surv:0,day:"",dn:0});
 let ST=null;try{ST=JSON.parse(localStorage.getItem("qm3")||"null")}catch(e){}
 let FIRST=false;if(!ST||!ST.ps||!ST.ps.length){FIRST=true;ST={cur:0,v:2,ps:[newP("Joueur 1")],mute:false,nov:false};try{const o=JSON.parse(localStorage.getItem("qm2")||"null");if(o){Object.assign(ST.ps[0],o);FIRST=false}}catch(e){}}
@@ -1085,7 +1085,7 @@ function abandon(){askD("Abandonner ce combat ? Les pièces déjà gagnées sont
 function askName(){if(!FIRST||$("fn"))return;const d=document.createElement("div");d.className="ov";d.id="fn";d.style.zIndex=130;
  d.innerHTML=`<div class="card c glow" onclick="event.stopPropagation()"><div class="pop" style="font-size:3.6rem;line-height:1.1">👋</div><h2 style="margin:6px 0">Comment t’appelles-tu ?</h2><p><small style="color:var(--mut)">Ce prénom sera celui de ton profil.</small></p><input id="fnn" class="nm" maxlength="12" placeholder="Ton prénom" autocomplete="off" style="margin:8px 0;text-align:center"><button class="btn big" id="fnb" onclick="saveName()">✅ C’est parti !</button></div>`;document.body.appendChild(d);const i=$("fnn");i.addEventListener("keydown",e=>{if(e.key=="Enter")saveName()});setTimeout(()=>{try{i.focus()}catch(e){}},200)}
 function saveName(){const i=$("fnn"),n=(i&&i.value||"").trim().slice(0,12);if(!n){if(i){i.style.outline="2px solid #ff6a6a";i.focus()}return}S.pn=n;FIRST=false;save();const d=$("fn");if(d)d.remove();home()}
-const NEWS=[{d:"30 octobre 2026",t:"Nouveau look",l:[
+const NEWS=[{d:"30 octobre 2026",t:"Braconnier",l:[["🏹","<b>Braconnier</b> (dans Vendeur) : il rachète tes monstres capturés. Bronze 10 🪙, argent 20 🪙, or 30 🪙, légendaires 100 🪙."]]},{d:"30 octobre 2026",t:"Nouveau look",l:[
  ["🎨","<b>Nouvel accueil</b> : décor illustré, ton héros bien en vue, barre de menu en bas (Accueil, Carte, Dex, Boutique, Sac)."],
  ["🎒","<b>Onglet Sac</b> : badges, inventaire, vendeur, échanges, nouveautés et espace parent."],
  ["⚔️","Nouveaux boutons, fenêtres et couleurs dans tout le jeu."]]},{d:"30 octobre 2026",t:"Famille en ligne",l:[
@@ -1818,7 +1818,16 @@ const invRows=(sell)=>{const ks=Object.keys(ITM).filter(k=>(S.inv[k]||0)>0);if(!
  return ks.map(k=>{const n=S.inv[k],i=ITM[k];return `<div class="ivr"><span class="ive">${i.e}</span><span class="ivt"><b>${i.n}</b> <span class="ivn">×${n}</span><small>${i.d}</small></span>${sell?`<span class="ivb"><button class="btn" onclick="sellItem('${k}',1)">Vendre · ${sellP(k)} 🪙</button>${n>1?`<button class="btn" onclick="sellItem('${k}',${n})">Tout · ${sellP(k)*n} 🪙</button>`:""}</span>`:""}</div>`}).join("")};
 WT.inv=()=>"🎒 Inventaire";WT.sell=()=>"🏪 Vendeur · 🪙 "+(S.coins||0);
 WB.inv=()=>`<div class="ivh">${invCount()} objet${invCount()>1?"s":""} · 🎁 ${chs().length}/${CHMAX} coffre${chs().length>1?"s":""} à ouvrir</div>`+invRows(false);
-WB.sell=()=>`<div class="ivh">Le vendeur rachète les objets de la boutique <b>à moitié prix</b> et les objets rigolos <b>1 à 3 🪙</b>, rares <b>5 à 7 🪙</b>, uniques <b>10 à 15 🪙</b>.</div>${["j","r","u"].filter(t=>Object.keys(ITM).some(k=>ITM[k].t==t&&S.inv[k]>0)).map(t=>`<button class="btn" style="text-align:center;margin:0 0 6px" onclick="sellCat('${t}')">🧺 Vendre tous les objets ${CATN[t]}</button>`).join("")}`+invRows(true);
+WB.sell=()=>`<button class="btn" style="text-align:center;margin:0 0 8px;background:linear-gradient(180deg,#8a5a2b,#5a3512);border:2px solid #d9a45c" onclick="openWin('poach')">🏹 Braconnier · racheter mes monstres</button><div class="ivh">Le vendeur rachète les objets de la boutique <b>à moitié prix</b> et les objets rigolos <b>1 à 3 🪙</b>, rares <b>5 à 7 🪙</b>, uniques <b>10 à 15 🪙</b>.</div>${["j","r","u"].filter(t=>Object.keys(ITM).some(k=>ITM[k].t==t&&S.inv[k]>0)).map(t=>`<button class="btn" style="text-align:center;margin:0 0 6px" onclick="sellCat('${t}')">🧺 Vendre tous les objets ${CATN[t]}</button>`).join("")}`+invRows(true);
+
+const poachP=i=>i>150?100:[30,10,20][(i+1)%3];
+const poachFr=i=>i>150?"🌟 légendaire":["🥇 or","🥉 bronze","🥈 argent"][(i+1)%3];
+WT.poach=()=>"🏹 Braconnier · 🪙 "+(S.coins||0);
+WB.poach=()=>{const l=MD.map((m,i)=>[m,i]).filter(([m])=>mcn(S,m.name)>0);const dbl=l.reduce((a,[m,i])=>a+(mcn(S,m.name)-1)*poachP(i),0);
+return `<div class="ivh">Le braconnier rachète tes monstres capturés : <b>bronze 10 🪙</b>, <b>argent 20 🪙</b>, <b>or 30 🪙</b>, <b>légendaires 100 🪙</b>.</div>`+(dbl?`<button class="btn" style="text-align:center;margin:0 0 8px" onclick="poachDup()">🧺 Vendre tous mes doubles · ${dbl} 🪙</button>`:"")+(l.length?`<div class="dex">${l.map(([m,i])=>`<button class="dx ${dxTier(i)}" onclick="poachSell(${i})">${dxi(m)}<small>${poachP(i)}🪙</small>${mcn(S,m.name)>1?`<i class="xn">×${mcn(S,m.name)}</i>`:""}</button>`).join("")}</div>`:`<div class="ivh">Tu n'as encore capturé aucun monstre.</div>`)};
+function poachSell(i){const m=MD[i],n=mcn(S,m.name);if(!n)return;const g=poachP(i);const go=()=>{rmMon(S,m.name,1);S.coins=(S.coins||0)+g;save();snd("cap");winRender()};
+askD("Vendre "+m.name+" ("+poachFr(i)+") pour "+g+" 🪙 ?"+(n==1?"\n⚠️ C'est ton dernier : il quittera ton Monstrodex.":""),go,"Vendre",{danger:n==1})}
+function poachDup(){let g=0,c=0;MD.forEach((m,i)=>{const n=mcn(S,m.name);if(n>1){g+=(n-1)*poachP(i);c+=n-1}});if(!c)return;askD("Vendre "+c+" doubles pour "+g+" 🪙 ? (tu gardes 1 exemplaire de chaque)",()=>{MD.forEach(m=>{const n=mcn(S,m.name);if(n>1)rmMon(S,m.name,n-1)});S.coins=(S.coins||0)+g;save();snd("cap");winRender()},"Vendre")}
 function sellCat(t){let g=0,c=0;for(const k in ITM)if(ITM[k].t==t&&S.inv[k]>0){g+=ITM[k].v*S.inv[k];c+=S.inv[k]}if(!c)return;askD("Vendre "+c+" objets "+CATN[t]+" pour "+g+" 🪙 ?",()=>{for(const k in ITM)if(ITM[k].t==t)S.inv[k]=0;S.coins=(S.coins||0)+g;save();snd("cap");home()},"Vendre")}
 function sellItem(k,n){if(!S.inv[k]||n<1)return;n=Math.min(n,S.inv[k]);const g=sellP(k)*n;const go=()=>{S.inv[k]-=n;S.coins=(S.coins||0)+g;save();snd("cap");home()};if(n>1)askD("Vendre "+n+" × "+ITM[k].n+" pour "+g+" 🪙 ?",go,"Vendre");else go()}
 {const st=document.createElement("style");st.textContent=`.ivh{text-align:center;color:var(--mut);font-size:.85rem;margin:6px 0 10px}.ivr{display:flex;align-items:center;gap:10px;padding:10px;margin:8px 0;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(15,10,45,.4)}.ive{font-size:2rem;line-height:1}.ivt{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}.ivt b{font-size:1rem}.ivn{color:#ffcf40;font-weight:800}.ivt small{color:var(--mut);font-size:.72rem}.ivb{display:flex;flex-direction:column;gap:5px}.ivb .btn{margin:0;padding:6px 10px;font-size:.78rem;white-space:nowrap}`;document.head.appendChild(st)}
