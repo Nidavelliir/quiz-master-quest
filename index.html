@@ -601,7 +601,7 @@ const HIMG46=`<img class="himg" alt="Héros zone 29" src="i207.webp">`;
 const HIMG47=`<img class="himg" alt="Héros zone 30" src="i208.webp">`;
 const HERO=[HIMG,HIMG1,HIMG2,HIMG3,HIMG4,HIMG5,HIMG6,HIMG7,HIMG8,HIMG9,HIMG10,HIMG11,HIMG12,HIMG13,HIMG14,HIMG15,HIMG16,HIMG17,HIMG18,HIMG19,HIMG20,HIMG21,HIMG22,HIMG23,HIMG24,HIMG25,HIMG26,HIMG27,HIMG28,HIMG29,HIMG30,HIMG31,HIMG32,HIMG33,HIMG34,HIMG35,HIMG36,HIMG37,HIMG38,HIMG39,HIMG40,HIMG41,HIMG42,HIMG43,HIMG44,HIMG45,HIMG46,HIMG47],UNL=[0,0,0,0,5,10,15,20,30,40,60,80,9999,9999,9999,9999,9999,9999,9001,9002,9003,9004,9005,9006,9007,9008,9009,9010,9011,9012,9013,9014,9015,9016,9017,9018,9019,9020,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030],HC=["#ffd23f","#ff6b6b","#4dd0e1","#7bd88f","#b388ff","#ff9ff3","#ffa94d","#cfd8dc","#2e86de","#10ac84","#a0522d","#222f3e"],HA=["","👑","🎩","🎓","🕶️","🎀","⭐","🛡️","🎧","🧢","⛑️","🌸"],HW=["","⚔️","🪄","🏹","📚","🎸","🧪","🔭"],BG=["linear-gradient(#2a2160,#1a1440)","linear-gradient(#a8e6ff,#e8fff1)","linear-gradient(#1b1740,#4b3a8f)","linear-gradient(#ffb36b,#ffe3a1)","linear-gradient(#0a5c8a,#7be0e0)","linear-gradient(#3b0d0d,#d1480f)"],BGL=["∅","🌿","🌙","🏜️","🌊","🌋"];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>"&#"+c.charCodeAt(0)+";");
-const hero=(i)=>`<span class="hero" style="--hc:${HC[S.hc||0]};">${S.fr?frImg(S.fr):""}${HERO[i==null?S.hero:i]}${S.ha?`<b>${HA[S.ha]}</b>`:""}${S.hw?`<i>${HW[S.hw]}</i>`:""}</span>`;
+const hero=(i)=>`<span class="hero" style="--hc:${HC[S.hc||0]};">${S.fr?frImg(S.fr):""}${HERO[i==null?S.hero:i]}</span>`;
 let HPREV=null;
 function pickH(i){if(hOK(i)){HPREV=null;S.hero=i;save();home()}else{HPREV=i;heroInfo(i);hpv()}}
 function heroInfo(i){const n=S.dex.length,c=S.coins||0,u=UNL[i],coin=u>=9999,zh=!coin&&u>9000;
@@ -631,8 +631,6 @@ function heroCard(){const n=S.dex.length;return `<div class="card c" id="hcard">
 ${sec("Prénom",`<input class="nm" style="margin:0" maxlength="12" placeholder="Prénom du héros" value="${esc(S.name||"")}" oninput="S.name=this.value.trim().slice(0,12);save()">`)}
 ${sec("Personnage ("+n+" captures)",`<div class="hg">${HERO.map((x,i)=>{const ok=hOK(i);return `<button class="hb ${i==S.hero?"on":""} ${ok?"":"lock"}" onclick="pickH(${i})">${x}${ok?"":`<small>${UNL[i]>=9999?"🪙 "+hpr(i):UNL[i]>9000?"🗺️ zone "+(UNL[i]-9000):"🔒 "+UNL[i]}</small>`}</button>`}).join("")}</div>`)}
 ${sec("Couleur du halo",row("hc",HC,(c,i,o)=>`<button class="sw ${o}${pz("hc",i)}" style="background:${c};--c:${c}" onclick="setH('hc',${i})"></button>`))}
-${sec("Accessoire",row("ha",HA,(a,i,o)=>`<button class="ac ${o}" onclick="setH('ha',${i})">${a||"∅"}</button>`))}
-${sec("Objet en main",row("hw",HW,(a,i,o)=>`<button class="ac ${o}${pz("hw",i)}" onclick="setH('hw',${i})">${a||"∅"}</button>`))}
 <p style="font-size:.8rem;color:var(--mut)">🛒 Cadres, titres, décors de combat et thèmes animés : dans la Boutique.</p>
 </details></div>`}
 const $=id=>document.getElementById(id);
@@ -3658,6 +3656,10 @@ html body main .hs2 .chtab .chs{background:rgba(255,248,225,.35)!important;borde
 .win:has(.hg) .wp{background:linear-gradient(rgba(24,14,10,.8),rgba(24,14,10,.88)),url(s_libtop.webp) top/100% auto no-repeat,url(s_libbot.webp) bottom/100% auto no-repeat!important}
 .win:has(.hg) .hb{background:rgba(10,8,28,.22)!important;backdrop-filter:none!important}
 .win:has(.hg) .nm{background:rgba(10,8,28,.3)!important}
+
+.scn .pf i{transition:transform .25s ease;cursor:zoom-in;position:relative;z-index:2}
+.scn .pf i.zoom{transform:scale(3.3);transform-origin:0 0;z-index:40;cursor:zoom-out;box-shadow:0 0 0 .6cqw #e3b84a,0 2cqw 6cqw rgba(0,0,0,.6)}
+.scn .pf:has(i.zoom){z-index:40}
 </style>
 <script>
 (()=>{
@@ -3683,7 +3685,7 @@ function skinMore(){skinMore2();const c=app.querySelector(":scope>.card.c");if(c
 function skinHome(){skinMore();const hc=document.getElementById("hcard");if(!hc||!app.contains(hc)||hc.classList.contains("hs2")){tabbar();return}
  hc.classList.add("hs2");const nm=S.pn||"Joueur",lvl=LV[S.lv],n=S.dex.length;
  const sc=document.createElement("div");sc.className="scn";
- sc.innerHTML=`<div class="ttl">Quiz<br>Master Quest</div><div class="coin">🪙 ${S.coins||0}</div><button class="gear" aria-label="Menu" onclick="openWin('menu')">⚙️</button><div class="pf"><i>${hero()}</i><div><b>${esc(nm)} <span role="button" aria-label="Modifier le nom" onclick="rn()" style="font-size:.7em">✏️</span><em>${lvl}</em></b><u><s style="width:${Math.max(3,Math.round(n/MD.length*100))}%"></s></u><small>${n} / ${MD.length} monstres capturés</small></div></div><div class="hh" onclick="openWin('hero')">${hero()}</div><button class="sb" style="top:49%" onclick="openWin('news')"><span>📜</span>Nouveautés</button>`;
+ sc.innerHTML=`<div class="ttl">Quiz<br>Master Quest</div><div class="coin">🪙 ${S.coins||0}</div><button class="gear" aria-label="Menu" onclick="openWin('menu')">⚙️</button><div class="pf"><i role="button" aria-label="Agrandir l’image du profil" onclick="this.classList.toggle('zoom')">${hero()}</i><div><b>${esc(nm)} <span role="button" aria-label="Modifier le nom" onclick="rn()" style="font-size:.7em">✏️</span><em>${lvl}</em></b><u><s style="width:${Math.max(3,Math.round(n/MD.length*100))}%"></s></u><small>${n} / ${MD.length} monstres capturés</small></div></div><div class="hh" onclick="openWin('hero')">${hero()}</div><button class="sb" style="top:49%" onclick="openWin('news')"><span>📜</span>Nouveautés</button>`;
  hc.prepend(sc);
  const mg=app.querySelector(".mgrid");if(mg){let x=mg;const rm=[];while(x){rm.push(x);x=x.nextElementSibling}rm.forEach(e=>e.remove())}
  app.querySelectorAll(".btn.big").forEach(b=>{const o=b.getAttribute("onclick")||"";const c=o.startsWith("start(")?"go":o.includes("'boss'")?"bossb":o.includes("'surv'")?"survb":o.includes("'rev'")?"revb":"";if(c){b.classList.add(c);b.removeAttribute("style")}});
