@@ -601,7 +601,7 @@ const HIMG46=`<img class="himg" alt="Héros zone 29" src="i207.webp">`;
 const HIMG47=`<img class="himg" alt="Héros zone 30" src="i208.webp">`;
 const HERO=[HIMG,HIMG1,HIMG2,HIMG3,HIMG4,HIMG5,HIMG6,HIMG7,HIMG8,HIMG9,HIMG10,HIMG11,HIMG12,HIMG13,HIMG14,HIMG15,HIMG16,HIMG17,HIMG18,HIMG19,HIMG20,HIMG21,HIMG22,HIMG23,HIMG24,HIMG25,HIMG26,HIMG27,HIMG28,HIMG29,HIMG30,HIMG31,HIMG32,HIMG33,HIMG34,HIMG35,HIMG36,HIMG37,HIMG38,HIMG39,HIMG40,HIMG41,HIMG42,HIMG43,HIMG44,HIMG45,HIMG46,HIMG47],UNL=[0,0,0,0,5,10,15,20,30,40,60,80,9999,9999,9999,9999,9999,9999,9001,9002,9003,9004,9005,9006,9007,9008,9009,9010,9011,9012,9013,9014,9015,9016,9017,9018,9019,9020,9021,9022,9023,9024,9025,9026,9027,9028,9029,9030],HC=["#ffd23f","#ff6b6b","#4dd0e1","#7bd88f","#b388ff","#ff9ff3","#ffa94d","#cfd8dc","#2e86de","#10ac84","#a0522d","#222f3e"],HA=["","👑","🎩","🎓","🕶️","🎀","⭐","🛡️","🎧","🧢","⛑️","🌸"],HW=["","⚔️","🪄","🏹","📚","🎸","🧪","🔭"],BG=["linear-gradient(#2a2160,#1a1440)","linear-gradient(#a8e6ff,#e8fff1)","linear-gradient(#1b1740,#4b3a8f)","linear-gradient(#ffb36b,#ffe3a1)","linear-gradient(#0a5c8a,#7be0e0)","linear-gradient(#3b0d0d,#d1480f)"],BGL=["∅","🌿","🌙","🏜️","🌊","🌋"];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>"&#"+c.charCodeAt(0)+";");
-const hero=(i)=>`<span class="hero" style="--hc:${HC[S.hc||0]};${S.fr?`border:3px solid ${FRC[S.fr]};box-shadow:0 0 10px ${FRC[S.fr]}`:""}">${HERO[i==null?S.hero:i]}${S.ha?`<b>${HA[S.ha]}</b>`:""}${S.hw?`<i>${HW[S.hw]}</i>`:""}</span>`;
+const hero=(i)=>`<span class="hero" style="--hc:${HC[S.hc||0]};">${S.fr?frImg(S.fr):""}${HERO[i==null?S.hero:i]}${S.ha?`<b>${HA[S.ha]}</b>`:""}${S.hw?`<i>${HW[S.hw]}</i>`:""}</span>`;
 let HPREV=null;
 function pickH(i){if(hOK(i)){HPREV=null;S.hero=i;save();home()}else{HPREV=i;heroInfo(i);hpv()}}
 function heroInfo(i){const n=S.dex.length,c=S.coins||0,u=UNL[i],coin=u>=9999,zh=!coin&&u>9000;
@@ -613,8 +613,8 @@ function setH(k,v){const p=(PRC[k]||[])[v]||0;if(!p||S.own[k+v]){S[k]=v;save();h
 let HOP=false,DXO=false;
 const sec=(t,x)=>`<div style="margin:12px 0 4px;font-weight:700;font-size:.85rem;text-align:left">${t}</div>${x}`;
 const row=(k,A,f)=>`<div class="cats" style="justify-content:center">${A.map((a,i)=>f(a,i,i==(S[k]||0)?"on":"")).join("")}</div>`;
-const FRC=["transparent","#cd7f32","#c0c0c0","#ffd700","#ff4fd8","#7de3ff"],FRL=["∅","🥉","🥈","🥇","💗","❄️"],TI=["","Apprenti","Chasseur de monstres","Briseur de boss","Génie des maths","As du français","Maître des légendes","Super champion"];
-const PRC={hc:[0,20,20,20,20,20,20,20,50,50,50,50],hw:[0,20,50,20,20,20,20,50],bg:[0,20,20,20,50,50],fr:[0,30,30,30,30,30],ti:[0,20,20,20,20,20,20,20],th:[0,50,50,50,50,50,50,50,50]};
+const FRC=["transparent","#cd7f32","#c0c0c0","#ffd700","#ff4fd8","#7de3ff","#ff3b30","#ff7a1a","#9aa4b2","#ff9ec7"],FRL=["∅","🥉","🥈","🥇","💗","❄️","🔴","🌋","⚙️","🌸"],FRN=["","bronze","argent","or","coeur","glace","pokemon","lave","acier","fleuri"],FRI={bronze:[.5,.48,.707,.656],argent:[.5,.486,.695,.643],or:[.5,.48,.687,.636],coeur:[.501,.461,.764,.671],pokemon:[.501,.509,.715,.639],glace:[.502,.479,.677,.598],lave:[.501,.482,.678,.612],acier:[.499,.477,.839,.597],fleuri:[.499,.457,.684,.566]},frImg=i=>{const n=FRN[i];if(!n)return"";const[x,y,w,h]=FRI[n],d=(w+h)/2;return`<span class="hfi" style="background-image:url(s_fr_${n}.webp);width:${(100/d).toFixed(1)}%;height:${(100/d).toFixed(1)}%;left:${(50-100*x/d).toFixed(1)}%;top:${(50-100*y/d).toFixed(1)}%"></span>`},TI=["","Apprenti","Chasseur de monstres","Briseur de boss","Génie des maths","As du français","Maître des légendes","Super champion"];
+const PRC={hc:[0,20,20,20,20,20,20,20,50,50,50,50],hw:[0,20,50,20,20,20,20,50],bg:[0,20,20,20,50,50],fr:[0,30,30,30,30,30,30,30,30,30],ti:[0,20,20,20,20,20,20,20],th:[0,50,50,50,50,50,50,50,50]};
 for(const k in PRC)PRC[k]=PRC[k].map(v=>v>0?v*2:v);
 const AP={sb:30,sup:30,hyp:150,mas:300,fh:15},DEFP={AP:{...AP},PRC:JSON.parse(JSON.stringify(PRC))},hpr=i=>{const o=(ST&&ST.pr)||{};return(o["he"+i]!=null?o["he"+i]:200)+50*((S&&S.hbn)||0)};
 const own=(k,i)=>!(PRC[k]||[])[i]||S.own[k+i],pz=(k,i)=>own(k,i)?"":" lk",hOK=i=>S.dex.length>=UNL[i]||S.own["he"+i]||(UNL[i]>9000&&UNL[i]<9999&&Math.max(0,...zcl())>=UNL[i]-9000);
@@ -3614,6 +3614,16 @@ body[data-th="foudre"]::after,body[data-th="foudre"] main::before,body[data-th="
 body[data-th="halloween"]{background:#10163a url(s_th_halloween.webp) center/cover no-repeat fixed!important}
 body[data-th="halloween"]::before{background:radial-gradient(circle at 12% 18%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 4px,rgba(255,170,60,0) 16px),radial-gradient(circle at 30% 40%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 3px,rgba(255,170,60,0) 12px),radial-gradient(circle at 55% 12%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 5px,rgba(255,170,60,0) 20px),radial-gradient(circle at 78% 30%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 3px,rgba(255,170,60,0) 12px),radial-gradient(circle at 90% 55%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 4px,rgba(255,170,60,0) 16px),radial-gradient(circle at 20% 66%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 5px,rgba(255,170,60,0) 20px),radial-gradient(circle at 45% 52%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 3px,rgba(255,170,60,0) 12px),radial-gradient(circle at 68% 72%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 4px,rgba(255,170,60,0) 16px),radial-gradient(circle at 8% 85%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 4px,rgba(255,170,60,0) 16px),radial-gradient(circle at 35% 90%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 5px,rgba(255,170,60,0) 20px),radial-gradient(circle at 60% 92%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 3px,rgba(255,170,60,0) 12px),radial-gradient(circle at 85% 88%,rgba(255,255,255,.95) 0,rgba(255,170,60,.85) 4px,rgba(255,170,60,0) 16px)!important;animation:nts 3.6s ease-in-out infinite alternate!important;opacity:1;display:block!important}
 body[data-th="halloween"]::after,body[data-th="halloween"] main::before,body[data-th="halloween"] main::after{display:none!important;animation:none!important}
+
+/* cadres illustrés */
+.hero .hfi{position:absolute;background:center/100% 100% no-repeat;pointer-events:none;z-index:6;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.hs2 .scn .hh:has(.hfi){background:none!important;border-color:transparent!important;box-shadow:none!important;overflow:visible!important}
+.hs2 .scn .hh:has(.hfi)::after{display:none!important}
+.hs2 .scn .hh:has(.hfi){transform:translateY(3cqw) scale(.84)}
+.dex .dx.fr-b,.dex .dx.fr-s,.dex .dx.fr-g{position:relative;overflow:visible;border:0!important;box-shadow:none!important;background:none!important;padding:13%!important}
+.dex .dx.fr-b::after,.dex .dx.fr-s::after,.dex .dx.fr-g::after{content:"";position:absolute;inset:-7%;background:center/100% 100% no-repeat;pointer-events:none;z-index:3}
+.dex .dx.fr-b::after{background-image:url(s_fr_bronze.webp)}.dex .dx.fr-s::after{background-image:url(s_fr_argent.webp)}.dex .dx.fr-g::after{background-image:url(s_fr_or.webp)}
+.dex .dx.fr-b>small,.dex .dx.fr-s>small,.dex .dx.fr-g>small{position:absolute;left:0;right:0;bottom:-2px;z-index:4;font-size:.6rem;text-shadow:0 1px 2px #000}
 </style>
 <script>
 (()=>{
