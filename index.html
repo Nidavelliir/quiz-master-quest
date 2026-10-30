@@ -1588,9 +1588,13 @@ function selOpen(id){const o=SELS[id];if(!o)return;const d=document.createElemen
  d.innerHTML=`<div class="card c" style="background:rgba(22,14,54,.98)!important;border-color:#7c63d6!important" onclick="event.stopPropagation()"><div style="font-weight:700;margin-bottom:12px">Choisis le taux</div><div class="sgrid">${o.list.map(v=>`<button class="${v==o.cur?"on":""}" onclick="selSet('${id}',${v},this)">${v} %</button>`).join("")}</div><button class="btn" style="text-align:center;margin-top:14px" onclick="this.closest('.ov').remove()">Annuler</button></div>`;document.body.appendChild(d)}
 function selSet(id,v,b){const o=SELS[id];window[o.fn](o.i,v);b.closest(".ov").remove();pRef()}
 
+
+/* réglages partagés (verrous boutique, taux magique) : le parent les publie, les téléphones reliés les appliquent */
+async function fbCfgPush(){const f=ST.fb;if(!f||!f.fam||f.role!="parent")return;if(!ST.lk&&ST.mgr==null)return;try{const X=await fbLoad();await X.fs.setDoc(X.fs.doc(X.db,"fam",f.fam,"ops","_cfg"),{pid:"__cfg",cfg:JSON.stringify({lk:ST.lk||{},mgr:ST.mgr!=null?ST.mgr:5}),ts:Date.now(),from:f.dev});fbSet("ok","")}catch(e){fbSet("err",fbErr(e))}}
+function fbCfgRecv(){const f=ST.fb;if(!f||f.role=="parent")return;const o=FBOps.find(x=>x.id==="_cfg");if(!o||!(o.ts>(f.cfgTs||0)))return;try{const c=JSON.parse(o.cfg);ST.lk=c.lk||{};ST.mgr=c.mgr!=null?+c.mgr:5;f.cfgTs=o.ts;save();if(!document.querySelector(".fgt")&&!document.querySelector(".ov")&&!PAU)home()}catch(e){}}
 /* ---------- taux magique + verrous boutique (tous les profils) ---------- */
 function isLk(k){return !!(ST.lk&&ST.lk[k])}
-function pMgr(i,v){ST.mgr=+v;save()}
+function pMgr(i,v){ST.mgr=+v;save();fbCfgPush()}
 function lkList(){const L=[];const N={sb:["🍬","Bonbon"],sup:["🔵","Super Ball"],hyp:["🟡","Hyper Ball"],mas:["🟣","Master Ball"],fh:["🎯","50/50"]};
  L.push(["🛍️ Objets",Object.keys(N).map(k=>({k,e:N[k][0],n:N[k][1]}))]);
  const hs=[];HERO.forEach((h,i)=>{if(UNL[i]>=9999)hs.push({k:"he"+i,e:h.replace('class="himg"','class="himg" style="width:34px;height:34px;object-fit:contain"'),n:""})});if(hs.length)L.push(["🦸 Héros à acheter",hs]);
@@ -1601,10 +1605,10 @@ function lkList(){const L=[];const N={sb:["🍬","Bonbon"],sup:["🔵","Super Ba
 function lkWin(){const old=$("lkw2");const y=old?old.firstChild.scrollTop:0;if(old)old.remove();
  const body=lkList().map(([t,a])=>`<div class="plabel">${t}</div><div class="prg">${a.map(x=>`<button class="pri lkb2 ${isLk(x.k)?"on":""}" onclick="lkTog('${x.k}')"><span class="pe">${x.e}</span>${x.n?`<small>${x.n}</small>`:""}<b>${isLk(x.k)?"🔒 Verrouillé":"🔓 Ouvert"}</b></button>`).join("")}</div>`).join("");
  const d=document.createElement("div");d.className="ov";d.style.zIndex=300;d.id="lkw2";
- d.innerHTML=`<div class="card c" style="background:rgba(22,14,54,.98)!important;border-color:#7c63d6!important;width:100%;max-width:520px;max-height:88vh;overflow-y:auto" onclick="event.stopPropagation()"><div style="font-weight:800;font-size:1.1rem">🔒 Verrous de la boutique</div><small style="color:var(--mut)">Un objet verrouillé ne peut plus être acheté, pour tous les profils de ce téléphone. Les objets déjà achetés restent acquis.</small><div class="pact" style="margin-top:8px"><button class="btn" onclick="lkAll(true)">🔒 Tout verrouiller</button><button class="btn" onclick="lkAll(false)">🔓 Tout déverrouiller</button></div>${body}<button class="btn big" style="text-align:center" onclick="$('lkw2').remove();pRef()">✅ Fermer</button></div>`;
+ d.innerHTML=`<div class="card c" style="background:rgba(22,14,54,.98)!important;border-color:#7c63d6!important;width:100%;max-width:520px;max-height:88vh;overflow-y:auto" onclick="event.stopPropagation()"><div style="font-weight:800;font-size:1.1rem">🔒 Verrous de la boutique</div><small style="color:var(--mut)">Un objet verrouillé ne peut plus être acheté, pour tous les profils, et sur tous les téléphones reliés à ta famille en ligne. Les objets déjà achetés restent acquis.</small><div class="pact" style="margin-top:8px"><button class="btn" onclick="lkAll(true)">🔒 Tout verrouiller</button><button class="btn" onclick="lkAll(false)">🔓 Tout déverrouiller</button></div>${body}<button class="btn big" style="text-align:center" onclick="$('lkw2').remove();pRef()">✅ Fermer</button></div>`;
  document.body.appendChild(d);d.firstChild.scrollTop=y}
-function lkTog(k){ST.lk=ST.lk||{};if(ST.lk[k])delete ST.lk[k];else ST.lk[k]=1;save();lkWin();home()}
-function lkAll(v){ST.lk={};if(v)lkList().forEach(([t,a])=>a.forEach(x=>ST.lk[x.k]=1));save();lkWin();home()}
+function lkTog(k){ST.lk=ST.lk||{};if(ST.lk[k])delete ST.lk[k];else ST.lk[k]=1;save();fbCfgPush();lkWin();home()}
+function lkAll(v){ST.lk={};if(v)lkList().forEach(([t,a])=>a.forEach(x=>ST.lk[x.k]=1));save();fbCfgPush();lkWin();home()}
 {const st=document.createElement("style");st.textContent=`.lkb2{cursor:pointer;color:var(--tx)}.lkb2 b{font-size:.7rem}.lkb2.on{border-color:#ff7a6a;background:rgba(255,90,70,.18)}`;document.head.appendChild(st)}
 /* ---------- aides et fenêtres de lancement ---------- */
 const HELPS={
@@ -3173,7 +3177,7 @@ async function fbPush(){const f=ST.fb;if(!f||!f.fam)return;try{const X=await fbL
 let FBOps=[],FBUn2=null;
 async function fbWatch(){const f=ST.fb;if(!f||!f.fam)return;try{const X=await fbLoad();
  if(f.role=="parent"&&!FBUn)FBUn=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"profiles"),sn=>{FBRem=sn.docs.map(d=>({id:d.id,...d.data()}));fbSet("ok","")},e=>{FBUn=null;fbSet("err",fbErr(e))});
- if(!FBUn2)FBUn2=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"ops"),sn=>{FBOps=sn.docs.map(d=>({id:d.id,...d.data()}));fbRecv();if(PAU&&!RM)pRef()},e=>{FBUn2=null;fbSet("err",fbErr(e))})}catch(e){fbSet("err",fbErr(e))}}
+ if(!FBUn2)FBUn2=X.fs.onSnapshot(X.fs.collection(X.db,"fam",f.fam,"ops"),sn=>{FBOps=sn.docs.map(d=>({id:d.id,...d.data()}));fbCfgRecv();fbRecv();if(PAU&&!RM)pRef()},e=>{FBUn2=null;fbSet("err",fbErr(e))})}catch(e){fbSet("err",fbErr(e))}fbCfgPush()}
 /* --- modifications à distance : journal d'opérations (rien n'est écrasé : les nombres sont additionnés) --- */
 const fbIsO=x=>x&&typeof x=="object"&&!Array.isArray(x),fbInc=p=>p=="coins"||/^inv\./.test(p),fbJ=x=>JSON.stringify(x===undefined?null:x);
 function fbDiff(o,n){const ops=[];
