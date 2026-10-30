@@ -616,7 +616,7 @@ const row=(k,A,f)=>`<div class="cats" style="justify-content:center">${A.map((a,
 const FRC=["transparent","#cd7f32","#c0c0c0","#ffd700","#ff4fd8","#7de3ff","#ff3b30","#ff7a1a","#9aa4b2","#ff9ec7"],FRL=["∅","🥉","🥈","🥇","💗","❄️","🔴","🌋","⚙️","🌸"],FRN=["","bronze","argent","or","coeur","glace","pokemon","lave","acier","fleuri"],FRI={bronze:[.5,.48,.707,.656],argent:[.5,.486,.695,.643],or:[.5,.48,.687,.636],coeur:[.501,.461,.764,.671],pokemon:[.501,.509,.715,.639],glace:[.502,.479,.677,.598],lave:[.501,.482,.678,.612],acier:[.499,.477,.839,.597],fleuri:[.499,.457,.684,.566]},frImg=i=>{const n=FRN[i];if(!n)return"";const[x,y,w,h]=FRI[n],d=(w+h)/2;return`<span class="hfi" style="background-image:url(s_fr_${n}.webp);width:${(100/d).toFixed(1)}%;height:${(100/d).toFixed(1)}%;left:${(50-100*x/d).toFixed(1)}%;top:${(50-100*y/d).toFixed(1)}%"></span>`},TI=["","Apprenti","Chasseur de monstres","Briseur de boss","Génie des maths","As du français","Maître des légendes","Super champion"];
 const PRC={hc:[0,20,20,20,20,20,20,20,50,50,50,50],hw:[0,20,50,20,20,20,20,50],bg:[0,20,20,20,50,50],fr:[0,30,30,30,30,30,30,30,30,30],ti:[0,20,20,20,20,20,20,20],th:[0,50,50,50,50,50,50,50,50]};
 for(const k in PRC)PRC[k]=PRC[k].map(v=>v>0?v*2:v);
-const AP={sb:30,sup:30,hyp:150,mas:300,fh:15},DEFP={AP:{...AP},PRC:JSON.parse(JSON.stringify(PRC))},hpr=i=>{const o=(ST&&ST.pr)||{};return(o["he"+i]!=null?o["he"+i]:200)+50*((S&&S.hbn)||0)};
+const AP={sb:30,sup:30,hyp:150,mas:300,fh:15},DEFP={AP:{...AP},PRC:JSON.parse(JSON.stringify(PRC))},hpr=i=>{const o=(ST&&ST.pr)||{};return(o["he"+i]!=null?o["he"+i]:300)+50*((S&&S.hbn)||0)};
 const own=(k,i)=>!(PRC[k]||[])[i]||S.own[k+i],pz=(k,i)=>own(k,i)?"":" lk",hOK=i=>S.dex.length>=UNL[i]||S.own["he"+i]||(UNL[i]>9000&&UNL[i]<9999&&Math.max(0,...zcl())>=UNL[i]-9000);
 const gc=n=>{S.coins=(S.coins||0)+n;G.gain=(G.gain||0)+n};
 function buy(id,p,n,f){if(isLk(id)){tell("🔒 Cet objet est verrouillé par tes parents.");return}if((S.coins||0)<p){tell("Il te faut "+p+" 🪙 (tu en as "+(S.coins||0)+").");return}askD("Acheter "+n+" pour "+p+" 🪙 ?",()=>{S.coins-=p;S.own[id]=1;if(f)f();save();home()},"Acheter")}
@@ -1065,7 +1065,7 @@ const applyTheme=()=>{document.body.dataset.th=THN[S.th||0]||"nature"};
 {const _h=home;home=function(){applyTheme();_h()}}
 function pRen(i){const n=prompt("Nouveau prénom du profil ?",ST.ps[i].pn);if(n&&n.trim()){ST.ps[i].pn=n.trim().slice(0,12);save();pRef()}}
 const PN={fr:FRL,ti:TI.map(t=>t||"∅"),bg:BGL,th:THL};
-function shopSec(t,k,pv){return `<div class="plabel">${t}</div><div class="shg">${PN[k].map((a,i)=>{const pr=(PRC[k]||[])[i]||0,ow=own(k,i),on=(S[k]||0)==i;return `<div class="it ${on?"on":""}"><button class="ac${ow?"":" lk"}" style="width:100%;height:auto;padding:6px 2px;font-size:${k=="ti"?".7rem":"1.3rem"}" onclick="setH('${k}',${i})">${a}</button><small>${on?"✔️ choisi":ow?(pr?"✅ acheté":"gratuit"):pr+" 🪙"}</small>${pv?`<button class="eye" onclick="pvOpen('${k}',${i})">👁️ Aperçu</button>`:""}</div>`}).join("")}</div>`}
+function shopSec(t,k,pv){return `<div class="plabel">${t}</div><div class="shg">${PN[k].map((a,i)=>{const pr=(PRC[k]||[])[i]||0,ow=own(k,i),on=(S[k]||0)==i;return `<div class="it ${on?"on":""}"><button class="ac${ow?"":" lk"}" style="width:100%;height:auto;padding:6px 2px;font-size:${k=="ti"?".7rem":"1.3rem"}" onclick="setH('${k}',${i})">${k=="fr"&&FRN[i]?`<img src="s_fr_${FRN[i]}.webp" alt="" style="width:72px;height:72px;object-fit:contain;display:block;margin:0 auto">`:a}</button><small>${on?"✔️ choisi":ow?(pr?"✅ acheté":"gratuit"):pr+" 🪙"}</small>${pv?`<button class="eye" onclick="pvOpen('${k}',${i})">👁️ Aperçu</button>`:""}</div>`}).join("")}</div>`}
 const shopItems=()=>shopSec("🖼️ Cadres","fr",1)+shopSec("🏷️ Titres","ti",1)+shopSec("⚔️ Décors de combat","bg",1)+shopSec("🎨 Thèmes animés (fond du jeu)","th",1);
 let PV=null;
 function pvOpen(k,i){PV={k,i};document.body.classList.add("pv");hpv();if(k=="th")document.body.dataset.th=THN[i];const pr=(PRC[k]||[])[i]||0,ow=own(k,i),HI=k=="fr"||k=="hw"||k=="hc"||k=="ti",sv=S[k];if(HI)S[k]=i;
@@ -1599,7 +1599,7 @@ function lkList(){const L=[];const N={sb:["🍬","Bonbon"],sup:["🔵","Super Ba
  L.push(["🛍️ Objets",Object.keys(N).map(k=>({k,e:N[k][0],n:N[k][1]}))]);
  const hs=[];HERO.forEach((h,i)=>{if(UNL[i]>=9999)hs.push({k:"he"+i,e:h.replace('class="himg"','class="himg" style="width:34px;height:34px;object-fit:contain"'),n:""})});if(hs.length)L.push(["🦸 Héros à acheter",hs]);
  const ca=(t,key,names,emo)=>{const a=[];(PRC[key]||[]).forEach((p,i)=>{if(p>0)a.push({k:key+i,e:emo?emo(i):"",n:names[i]||""})});if(a.length)L.push([t,a])};
- ca("🖼️ Cadres","fr",FRL,i=>`<span style="font-size:1.4rem">${FRL[i]}</span>`);ca("🏷️ Titres","ti",TI,i=>"🏷️");ca("⚔️ Décors de combat","bg",BGL,i=>BGL[i]);ca("🎨 Thèmes animés","th",THL,i=>THL[i].split(" ")[0]);
+ ca("🖼️ Cadres","fr",FRL,i=>FRN[i]?`<img src="s_fr_${FRN[i]}.webp" alt="" style="width:34px;height:34px;object-fit:contain">`:`<span style="font-size:1.4rem">${FRL[i]}</span>`);ca("🏷️ Titres","ti",TI,i=>"🏷️");ca("⚔️ Décors de combat","bg",BGL,i=>BGL[i]);ca("🎨 Thèmes animés","th",THL,i=>THL[i].split(" ")[0]);
  ca("🌈 Couleurs de halo","hc",HC.map((c,i)=>"Halo "+i),i=>`<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:${HC[i]}"></span>`);ca("🗡️ Objets en main","hw",HW,i=>HW[i]);
  return L}
 function lkWin(){const old=$("lkw2");const y=old?old.firstChild.scrollTop:0;if(old)old.remove();
@@ -1632,8 +1632,8 @@ const badgeBody=()=>{const ks=Object.entries(BD),tot=sum(S.bad),got=ks.filter(([
  return `<div class="bsum"><div class="bring" style="--p:${(tot%10)*10}"><b>${tot%10}/10</b></div><div><div style="font-size:1.15rem;font-weight:700">${tot} badge${tot>1?"s":""} gagné${tot>1?"s":""}</div><small style="color:var(--mut)">🎁 Encore <b>${10-tot%10}</b> badge${10-tot%10>1?"s":""} avant le bonus de <b>+5 🪙</b> (tous les 10 badges)</small></div></div><div class="bgrid">${ks.map(([k,b])=>{const n=S.bad[k]||0;return `<div class="bd ${n?"on":""}"><span class="bn">${n?"×"+n:"🔒"}</span><div class="bi">${b.i}</div><b>${b.n}</b><small>${b.d}</small></div>`}).join("")}</div>`};
 const WB={hero:heroBody,shop:()=>inner(shopCard()),zone:()=>inner(zoneCard()),badge:badgeBody,dex:dexBody,trade:()=>tradeBody(),news:()=>newsHtml()};
 function winRender(){let w=$("win");if(!WIN){if(w)w.remove();return}
- if(!w){w=document.createElement("div");w.id="win";w.className="win";w.onclick=e=>{if(e.target===w)closeWin()};w.innerHTML='<div class="wp"><div class="wh"><b id="wt"></b><button class="wx" onclick="closeWin()" aria-label="Fermer">✕</button></div><div class="wb" id="wb"></div></div>';document.body.appendChild(w)}
- const b=$("wb"),y=b.scrollTop;$("wt").textContent=WT[WIN]();b.innerHTML=WB[WIN]();b.scrollTop=y}
+ if(!w){w=document.createElement("div");w.id="win";w.className="win";w.onclick=e=>{if(e.target===w)closeWin()};w.dataset.k=WIN;w.innerHTML='<div class="wp"><div class="wh"><b id="wt"></b><button class="wx" onclick="closeWin()" aria-label="Fermer">✕</button></div><div class="wb" id="wb"></div></div>';document.body.appendChild(w)}
+ w.dataset.k=WIN;const b=$("wb"),y=b.scrollTop;$("wt").textContent=WT[WIN]();b.innerHTML=WB[WIN]();b.scrollTop=y}
 function openWin(k){WIN=k;winRender();const b=$("wb");if(b)b.scrollTop=0;hpv();if(k=="zone"){const t=new Date().toLocaleDateString("sv");if(S.zhd!==t){S.zhd=t;save();help("zone")}}}
 function closeWin(){WIN=null;HPREV=null;winRender();hpv()}
 {const _h2=home;home=function(){_h2();winRender()}}
@@ -1695,7 +1695,7 @@ function prItems(kind){
   L2.push(["🎒 Objets",[it("sb","🍬","Bonbon",DEFP.AP.sb),it("sup","🔵","Super Ball",DEFP.AP.sup),it("hyp","🟡","Hyper Ball",DEFP.AP.hyp),it("mas","🟣","Master Ball",DEFP.AP.mas),it("fh","🎯","50/50",DEFP.AP.fh)]]);
   [["fr","🖼️ Cadres"],["ti","🏷️ Titres"],["bg","⚔️ Décors de combat"],["th","🎨 Thèmes animés"]].forEach(([k,t])=>{const a=[];DEFP.PRC[k].forEach((d,i)=>{if(d>0)a.push(it(k+i,k=="ti"?"🏷️":PN[k][i],k=="ti"?TI[i]:"",d))});L2.push([t,a])});
  }else if(kind=="hero"){
-  const a=[];UNL.forEach((u,i)=>{if(u>=9999)a.push(it("he"+i,HERO[i],"",200))});L2.push(["🦸 Héros payants",a]);
+  const a=[];UNL.forEach((u,i)=>{if(u>=9999)a.push(it("he"+i,HERO[i],"",300))});L2.push(["🦸 Héros payants",a]);
   L2.push(["🌈 Couleurs de halo",DEFP.PRC.hc.map((d,i)=>d>0?it("hc"+i,`<span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${HC[i]}"></span>`,"",d):null).filter(Boolean)]);
   L2.push(["🗡️ Objets en main",DEFP.PRC.hw.map((d,i)=>d>0?it("hw"+i,HW[i],"",d):null).filter(Boolean)]);
  }else{
@@ -3624,6 +3624,16 @@ body[data-th="halloween"]::after,body[data-th="halloween"] main::before,body[dat
 .dex .dx.fr-b::after,.dex .dx.fr-s::after,.dex .dx.fr-g::after{content:"";position:absolute;inset:-7%;background:center/100% 100% no-repeat;pointer-events:none;z-index:3}
 .dex .dx.fr-b::after{background-image:url(s_fr_bronze.webp)}.dex .dx.fr-s::after{background-image:url(s_fr_argent.webp)}.dex .dx.fr-g::after{background-image:url(s_fr_or.webp)}
 .dex .dx.fr-b>small,.dex .dx.fr-s>small,.dex .dx.fr-g>small{position:absolute;left:0;right:0;bottom:-2px;z-index:4;font-size:.6rem;text-shadow:0 1px 2px #000}
+
+/* boutique et braconnier : sans fond bleu */
+.win:has(.shg) .wp{background:linear-gradient(rgba(8,6,24,.18),rgba(8,6,24,.3)),url(s_libtop.webp) top/100% auto no-repeat,url(s_libbot.webp) bottom/100% auto no-repeat!important}
+.win:has(.shg) .it,.win:has(.shg) .ivh{background:rgba(10,8,28,.22)!important;backdrop-filter:none!important}
+html body .win .shg .it .ac{background:none!important;border:0!important;outline:0!important;box-shadow:none!important}html body .win .shg .it .ac::before,html body .win .shg .it .ac::after{display:none!important}
+.win:has(.shg) .plabel{text-shadow:0 1px 3px #000}
+.win[data-k="poach"] .wp{background:url(s_poach.webp) center/cover no-repeat,#120a24!important}
+.win[data-k="poach"] .wh{background:rgba(10,6,24,.45)!important;backdrop-filter:none!important}
+.win[data-k="poach"] .ivh,.win[data-k="poach"] .btn{background:rgba(10,6,24,.5)!important;backdrop-filter:none!important;border:1px solid rgba(255,214,140,.5)!important;color:#fff3d0!important}
+.win[data-k="poach"] .dx{background:rgba(10,6,24,.35)!important}
 </style>
 <script>
 (()=>{
