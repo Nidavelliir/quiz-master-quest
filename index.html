@@ -3705,10 +3705,12 @@ html body #nw .card .btn.big{background:linear-gradient(180deg,#f6c24a,#c9871a)!
 html body #nw .card li b{color:#5a3410!important}
 
 /* ville */
-.win[data-k="city"] .wp{background:#2a6a3a!important}
+.win[data-k="city"] .wp{background:#3f7d1f!important}
 html body .win[data-k="city"] .wh{background:rgba(30,18,8,.55)!important;backdrop-filter:none!important;position:relative;z-index:3}
 .win[data-k="city"] .wb{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;overflow:hidden}
-.cysc{position:absolute;inset:0;background:center/cover no-repeat;z-index:0}
+.cysc,.cyfx{position:absolute;left:50%;transform:translateX(-50%);width:100%;max-width:520px;aspect-ratio:940/1672;top:-8%}
+.cysc{background:center/100% 100% no-repeat;z-index:0}
+.cypv .cysc{inset:0;left:0;transform:none;width:auto;max-width:none;aspect-ratio:auto;top:0;background-size:cover}
 .cynew{animation:cyin 1.5s ease both}@keyframes cyin{0%,34%{opacity:0}62%,100%{opacity:1}}
 .cysm{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
 .cysm i{position:absolute;width:34%;aspect-ratio:1;margin:-17% 0 0 -17%;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.98) 0,rgba(235,238,245,.9) 38%,rgba(200,206,220,.55) 62%,transparent 72%);filter:blur(9px);opacity:0;transform:scale(.2);animation:cypuf 1.7s ease-out var(--d) both}
@@ -3726,7 +3728,7 @@ html body .win[data-k="city"] .cyp,html body .win[data-k="city"] .cyp *{text-sha
 .scn .sb b{position:absolute;top:-1.5cqw;right:-1.5cqw;background:#e53935;color:#fff;border-radius:99px;font-size:3cqw;padding:.4cqw 1.6cqw;font-weight:900}
 
 /* ville : ambiance, aperçu, pluie, progression */
-.cyfx{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.cyfx{z-index:1;pointer-events:none;overflow:hidden}
 .cyff{position:absolute;width:6px;height:6px;border-radius:50%;background:#fff6a8;box-shadow:0 0 8px 3px rgba(255,236,120,.8);opacity:0;animation:cyff var(--t) ease-in-out var(--d) infinite}
 @keyframes cyff{0%,100%{opacity:0;transform:translate(0,0)}25%{opacity:.95}50%{opacity:.7;transform:translate(14px,-18px)}75%{opacity:.95;transform:translate(-8px,-30px)}}
 .cyem{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffb13a;box-shadow:0 0 6px 2px rgba(255,140,30,.9);opacity:0;animation:cyem 2.6s ease-out var(--d) infinite}
