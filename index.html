@@ -3461,6 +3461,37 @@ body.lzb canvas#thc{display:none}
 .parch .cats.subs button img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:12px;border:2px solid #e3b84a}
 .parch .cats.subs button span{display:block;background:#fff6dc;border:2px solid #e3b84a;border-radius:99px;padding:1px 4px;margin-top:-12px;position:relative;font-weight:900;font-size:.72rem;color:#3b2a14}
 .parch .cats.subs button.on{box-shadow:none!important;opacity:1}.parch .cats.subs button:not(.on){opacity:.5;filter:grayscale(.6)}
+
+/* boutons illustrés, fenêtres d'aide, record */
+#tabbar button.on{background:linear-gradient(180deg,#6a2fd0,#3a1580);border:2px solid #b784ff;box-shadow:0 0 12px #9a5cff}
+#tabbar img{width:38px;height:32px}
+.bic{height:46px;width:46px;object-fit:contain;flex:none;margin-right:8px;vertical-align:middle;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.btn.go,.btn.bossb,.btn.survb,.btn.revb{display:flex;align-items:center;justify-content:center;text-align:left}
+.btn.go{border-radius:18px!important;outline:3px solid #b9822a;outline-offset:-8px;font-size:1.45rem;font-weight:900;font-family:"Trebuchet MS",system-ui}
+.btn.bossb,.btn.survb{justify-content:flex-start;text-align:left;font-weight:900;padding:8px!important}
+.btn.revb{border-radius:18px!important}
+.ov .lkw{background:linear-gradient(180deg,#f8e7bd,#ecd199)!important;border:4px solid #e3b84a!important;color:#4a3216;position:relative;margin-top:70px;overflow:visible!important}
+.ov .lkw *{text-shadow:none!important}
+.ov .lkw .lkb{overflow-y:auto}
+.ov .lkw h2{background:linear-gradient(180deg,#5a2fb0,#341a78);color:#ffd24a!important;border:3px solid #e3b84a;border-radius:14px;padding:6px 10px;margin:0 0 10px;font-size:1.45rem;text-shadow:0 2px 0 #1a0a40!important}
+.ov .lkw .lkb>div:first-child{display:none}
+.ov .lkw .lkm{position:absolute;left:50%;transform:translateX(-50%);top:-92px;width:230px;height:92px;background:url(s_mascot.webp) bottom center/contain no-repeat;pointer-events:none}
+.ov .lkw b{color:#4a2fb0}.ov .lkw .hl li{border-bottom:1px solid #d9bd80;padding-bottom:6px}
+.ov .lkw .lkf .btn{background:linear-gradient(180deg,#1e6aff,#0f3aa8)!important;border:2px solid #e3b84a!important}
+.ov .lkw .lkf .btn.big{background:linear-gradient(180deg,#9a5cff,#5b2bd0)!important;border:3px solid #e3b84a!important;font-size:1.25rem}
+.recd{position:relative;margin-top:96px!important;padding-top:30px!important}
+.recd .rch{position:absolute;left:50%;transform:translateX(-50%);top:-100px;width:230px;height:110px;background:url(s_trophy.webp) bottom center/contain no-repeat}
+.recd .pop{display:none}
+.recd h2{font-size:2rem;color:#ffd24a;text-shadow:0 3px 0 #5a2a00}
+.recd .gain{background:linear-gradient(180deg,#6a2fd0,#3a1580);border:2px solid #e3b84a;border-radius:14px;padding:6px;font-weight:900}
+
+html body .ov>.card.lkw{background:linear-gradient(180deg,#f8e7bd,#ecd199)!important;border:4px solid #e3b84a!important;color:#4a3216!important;overflow:visible!important;margin-top:90px}
+html body .ov>.card.lkw p,html body .ov>.card.lkw li,html body .ov>.card.lkw small{color:#4a3216!important}
+html body .ov>.card.lkw .lkm{display:block}
+html body .ov>.card.lkw.lkw .lkb{max-height:60vh}
+html body main .btn.bossb,html body main .btn.survb{font-size:.8rem!important;line-height:1.2}
+.btn.bossb .bic,.btn.survb .bic{width:38px;height:38px;margin-right:6px}
+.ov .lkw .lkm,.recd .rch{-webkit-mask-image:radial-gradient(ellipse 52% 62% at 50% 62%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 52% 62% at 50% 62%,#000 62%,transparent 100%)}
 </style>
 <script>
 (()=>{
@@ -3474,7 +3505,11 @@ function tabbar(){let t=document.getElementById("tabbar");
  const it=[["Accueil","closeWin()"],["Carte","openWin('zone')"],["Dex","openWin('dex')"],["Boutique","openWin('shop')"],["Sac","openWin('menu')"]];
  t.innerHTML=it.map((x,i)=>`<button class="${i==cur?"on":""}" onclick="${x[1]}"><img src="s_t${i+1}.webp" alt=""><span>${x[0]}</span></button>`).join("")}
 
-function skinMore(){const c=app.querySelector(":scope>.card.c");if(c&&!c.classList.contains("lz")&&c.textContent.includes("Tu as perdu")){c.classList.add("lz");c.insertAdjacentHTML("afterbegin",'<div class="lzh"></div>');document.body.classList.add("lzb")}
+function skinMore2(){document.querySelectorAll(".ov .lkw:not(.mz)").forEach(w=>{w.classList.add("mz");w.insertAdjacentHTML("afterbegin",'<div class="lkm"></div>')});
+ app.querySelectorAll(":scope>.card.c:not(.recd)").forEach(c=>{if(c.textContent.includes("Nouveau record")||c.textContent.includes("Fin de la survie")){c.classList.add("recd");c.insertAdjacentHTML("afterbegin",c.textContent.includes("Nouveau record")?'<div class="rch"></div>':"")}});
+ const IM={go:"go",bossb:"boss",survb:"surv",revb:"rev"};
+ app.querySelectorAll(".btn.go,.btn.bossb,.btn.survb,.btn.revb").forEach(b=>{if(b.querySelector(".bic"))return;const k=Object.keys(IM).find(x=>b.classList.contains(x));const q=b.querySelector(".qm");let t=b.textContent.replace("?","").replace(/^[^\wÀ-ÿ]+/,"").trim();b.innerHTML=`<img class="bic" src="s_b_${IM[k]}.webp" alt=""><span style="flex:1">${t}</span>`+(q?q.outerHTML:"")})}
+function skinMore(){skinMore2();const c=app.querySelector(":scope>.card.c");if(c&&!c.classList.contains("lz")&&c.textContent.includes("Tu as perdu")){c.classList.add("lz");c.insertAdjacentHTML("afterbegin",'<div class="lzh"></div>');document.body.classList.add("lzb")}
  if(!app.querySelector(".lz"))document.body.classList.remove("lzb");
  app.querySelectorAll(".parch").forEach(p=>{if(p.querySelector(".ph"))return;const t=p.textContent;
   if(t.includes("Niveau")&&p.querySelector(".cats")){p.classList.add("lvc");const b=p.querySelector("b"),sm=p.querySelector("small");const h=document.createElement("div");h.className="ph";h.innerHTML='<img src="s_cap.webp" alt="">Niveau'+(sm?'<small>🔒 code parent pour changer</small>':"");if(b)b.replaceWith(h);if(sm)sm.remove()}
@@ -3491,7 +3526,7 @@ function skinHome(){skinMore();const hc=document.getElementById("hcard");if(!hc|
  tabbar()}
 {const h0=home;home=function(){h0();skinHome()}}
 {const o=openWin,c=closeWin;openWin=function(k){o(k);tabbar()};closeWin=function(){c();tabbar()}}
-new MutationObserver(()=>{skinMore();skinHome()}).observe(app,{childList:true});
+new MutationObserver(()=>{skinMore();skinHome()}).observe(app,{childList:true});new MutationObserver(()=>skinMore2()).observe(document.body,{childList:true});
 skinHome();
 })();
 </script>
