@@ -3634,6 +3634,13 @@ html body .win .shg .it .ac{background:none!important;border:0!important;outline
 .win[data-k="poach"] .wh{background:rgba(10,6,24,.45)!important;backdrop-filter:none!important}
 .win[data-k="poach"] .ivh,.win[data-k="poach"] .btn{background:rgba(10,6,24,.5)!important;backdrop-filter:none!important;border:1px solid rgba(255,214,140,.5)!important;color:#fff3d0!important}
 .win[data-k="poach"] .dx{background:rgba(10,6,24,.35)!important}
+
+/* boutons boss / survie : grande image + texte aligné */
+html body main .btn.bossb,html body main .btn.survb{min-height:84px;padding:6px 8px 6px 4px!important;gap:2px;justify-content:flex-start;align-items:center;overflow:visible}
+html body main .btn.bossb .bic,html body main .btn.survb .bic{width:68px;height:68px;margin:0 4px 0 0;flex:none;object-fit:contain}
+.btx{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;min-width:0;text-align:left}
+.btx b{font-size:.92rem;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.btx small{font-size:.74rem;line-height:1.1;font-weight:800;color:#ffe9b0;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 </style>
 <script>
 (()=>{
@@ -3650,7 +3657,7 @@ function tabbar(){let t=document.getElementById("tabbar");
 function skinMore2(){document.querySelectorAll(".ov .lkw:not(.mz)").forEach(w=>{w.classList.add("mz");w.insertAdjacentHTML("afterbegin",'<div class="lkm"></div>')});
  app.querySelectorAll(":scope>.card.c:not(.recd)").forEach(c=>{if(c.textContent.includes("Nouveau record")||c.textContent.includes("Fin de la survie")){c.classList.add("recd");c.insertAdjacentHTML("afterbegin",c.textContent.includes("Nouveau record")?'<div class="rch"></div>':"")}});
  const IM={go:"go",bossb:"boss",survb:"surv",revb:"rev"};
- app.querySelectorAll(".btn.go,.btn.bossb,.btn.survb,.btn.revb").forEach(b=>{if(b.querySelector(".bic"))return;const k=Object.keys(IM).find(x=>b.classList.contains(x));const q=b.querySelector(".qm");let t=b.textContent.replace("?","").replace(/^[^\wÀ-ÿ]+/,"").trim();b.innerHTML=`<img class="bic" src="s_b_${IM[k]}.webp" alt=""><span style="flex:1">${t}</span>`+(q?q.outerHTML:"")})}
+ app.querySelectorAll(".btn.go,.btn.bossb,.btn.survb,.btn.revb").forEach(b=>{if(b.querySelector(".bic"))return;const k=Object.keys(IM).find(x=>b.classList.contains(x));const q=b.querySelector(".qm");let t=b.textContent.replace("?","").replace(/^[^\wÀ-ÿ]+/,"").trim();const mm=(k=="bossb"||k=="survb")&&t.match(/^(.*?)\s*\((.*)\)\s*$/);b.innerHTML=`<img class="bic" src="s_b_${IM[k]}.webp" alt="">`+(mm?`<span class="btx"><b>${mm[1]}</b><small>${mm[2]}</small></span>`:`<span style="flex:1">${t}</span>`)+(q?q.outerHTML:"")})}
 function skinMore(){skinMore2();const c=app.querySelector(":scope>.card.c");if(c&&!c.classList.contains("lz")&&c.textContent.includes("Tu as perdu")){c.classList.add("lz");c.insertAdjacentHTML("afterbegin",'<div class="lzh"></div>');document.body.classList.add("lzb")}
  if(!app.querySelector(".lz"))document.body.classList.remove("lzb");
  app.querySelectorAll(".parch").forEach(p=>{if(p.querySelector(".ph"))return;const t=p.textContent;
