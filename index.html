@@ -657,10 +657,12 @@ const newP=n=>({nv:NEWS_VER,id:Date.now()+Math.random().toString(36).slice(2,5),
 let ST=null;try{ST=JSON.parse(localStorage.getItem("qm3")||"null")}catch(e){}
 let FIRST=false;if(!ST||!ST.ps||!ST.ps.length){FIRST=true;ST={cur:0,v:2,ps:[newP("Joueur 1")],mute:false,nov:false};try{const o=JSON.parse(localStorage.getItem("qm2")||"null");if(o){Object.assign(ST.ps[0],o);FIRST=false}}catch(e){}}
 mig(ST);
+try{const B=JSON.parse(localStorage.getItem("qmq_lk")||"null");if(B)["pl","ll","zk","sl","lk"].forEach(k=>{if(ST[k]==null&&B[k]!=null)ST[k]=B[k]})}catch(e){}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
 ST.ps.forEach(p=>{p.dex=(p.dex||[]).map(n=>REN[n]||n);p.bad=p.bad||{};p.miss=p.miss||{};p.st=p.st||{};p.caps=p.caps||0;p.dmg=p.dmg||0;p.coins=p.coins||0;p.own=p.own||{};p.inv=p.inv||{};p.fr=p.fr||0;p.ti=p.ti||0;p.rc=p.rc||{};["hw","hc","bg"].forEach(k=>{if(p[k])p.own[k+p[k]]=1})});
 let S=ST.ps[ST.cur]||ST.ps[0];
 var RM=null;
-function save(){let ps=null;if(RM){ps=ST.ps;ST.ps=ps.filter((p,i)=>i!==RM.idx)}try{localStorage.setItem("qm3",JSON.stringify(ST))}catch(e){}if(ps)ST.ps=ps;try{fbSoon();fbRemSave()}catch(e){}}
+function save(){let ps=null;if(RM){ps=ST.ps;ST.ps=ps.filter((p,i)=>i!==RM.idx)}try{localStorage.setItem("qm3",JSON.stringify(ST))}catch(e){}try{localStorage.setItem("qmq_lk",JSON.stringify({pl:ST.pl,ll:ST.ll,zk:ST.zk,sl:ST.sl,lk:ST.lk}))}catch(e){}if(ps)ST.ps=ps;try{fbSoon();fbRemSave()}catch(e){}}
 let G;
 const sh=a=>a.map(x=>[Math.random(),x]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
 const L=[[
@@ -1681,7 +1683,8 @@ function selSet(id,v,b){const o=SELS[id];window[o.fn](o.i,v);b.closest(".ov").re
 async function gcPush(){if(!ST.dev)return "off";try{const X=await fbLoad(),u=X.auth.currentUser;if(!u)return "Connexion impossible";await X.fs.setDoc(X.fs.doc(X.db,"app","cfg"),{owner:u.uid,cfg:JSON.stringify({pl:ST.pl||{},ll:ST.ll||[],zk:ST.zk||[],sl:slk()}),fam:(ST.fb&&ST.fb.role=="parent"&&ST.fb.fam)||null,ts:Date.now()});return "ok"}catch(e){return "["+String(e&&(e.code||e.message)||e).slice(0,80)+"] "+fbErr(e)}}
 async function gcPull(){if(ST.dev)return;try{const X=await fbLoad(),s=await X.fs.getDoc(X.fs.doc(X.db,"app","cfg"));if(!s.exists())return;const dd=s.data();if(dd.fam&&(!ST.fb||!ST.fb.fam)&&!ST.noAuto){ST.fb={fam:dd.fam,role:"kid",dev:fbRnd(10),dn:"Téléphone de "+((S&&S.pn)||"joueur")};save();fbSet("wait","Envoi…");fbPush();fbWatch()}const c=JSON.parse(dd.cfg||"{}");if(JSON.stringify(c)!==JSON.stringify(ST.gc||null)){ST.gc=c;save();if(document.getElementById("hcard")&&!document.querySelector(".ov")&&!document.querySelector(".fgt")&&!WIN)home()}}catch(e){}}
 window.gcTest=async function(){const r=await gcPush();tell(r=="ok"?"🌍 Verrous publiés : ils s’appliquent à tous les joueurs de l’application.":r=="off"?"Active le mode développeur d’abord.":"🌍 Échec : "+r)};
-setTimeout(()=>{ST.dev?gcPush():gcPull()},2500);setInterval(()=>{ST.dev?0:gcPull()},300000);document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!ST.dev)gcPull()});
+async function gcDev(){try{if(ST.pl==null&&ST.ll==null&&ST.zk==null&&ST.sl==null){const X=await fbLoad(),s=await X.fs.getDoc(X.fs.doc(X.db,"app","cfg"));if(s.exists()){const c=JSON.parse(s.data().cfg||"{}");if(c.pl||c.ll||c.zk||c.sl){if(c.pl)ST.pl=c.pl;if(c.ll)ST.ll=c.ll;if(c.zk)ST.zk=c.zk;if(c.sl)ST.sl=c.sl;save();home();return}}}}catch(e){}gcPush()}
+setTimeout(()=>{ST.dev?gcDev():gcPull()},2500);setInterval(()=>{ST.dev?0:gcPull()},300000);document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!ST.dev)gcPull()});
 async function fbCfgPush(){gcPush();const f=ST.fb;if(!f||!f.fam||f.role!="parent")return;if(!ST.lk&&ST.mgr==null)return;try{const X=await fbLoad();await X.fs.setDoc(X.fs.doc(X.db,"fam",f.fam,"ops","_cfg"),{pid:"__cfg",cfg:JSON.stringify({lk:ST.lk||{},mgr:ST.mgr!=null?ST.mgr:5,cpr:ST.cpr||null,sl:ST.sl||null,pl:ST.pl||null,ll:ST.ll||null,zk:ST.zk||null,mip:ST.mip!=null?ST.mip:null}),ts:Date.now(),from:f.dev});fbSet("ok","")}catch(e){fbSet("err",fbErr(e))}}
 function fbCfgRecv(){const f=ST.fb;if(!f||f.role=="parent")return;const o=FBOps.find(x=>x.id==="_cfg");if(!o||!(o.ts>(f.cfgTs||0)))return;try{const c=JSON.parse(o.cfg);ST.lk=c.lk||{};ST.mgr=c.mgr!=null?+c.mgr:5;if(c.cpr)ST.cpr=c.cpr;if(c.sl)ST.sl=c.sl;if(c.pl)ST.pl=c.pl;if(c.ll)ST.ll=c.ll;if(c.zk)ST.zk=c.zk;if(c.mip!=null)ST.mip=+c.mip;f.cfgTs=o.ts;save();if(!document.querySelector(".fgt")&&!document.querySelector(".ov")&&!PAU)home()}catch(e){}}
 /* ---------- taux magique + verrous boutique (tous les profils) ---------- */
